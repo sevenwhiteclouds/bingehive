@@ -6,14 +6,38 @@ const apiOptions = require("./apiAccess.js");
 app.use(express.static("public"));
 
 app.get('/', async (req, res) => {
-      let movieData = await fetchMovieData();
+  const genres = ['Action', 'Horror', 'Thriller', 'Western', 'Science Fiction', 'Drama', 'Romance',
+                    'Comedy', 'Fantasy', 'Animation', 'Documentary', 'Mystery', 'Teen'];
+    const genreList = [];
+
+
+    for (let i = 0; i < 4; i++) {
+        let number = getRandomNumFromLength(genres.length);
+
+        if (!genreList.includes(genres[number])){
+            genreList.push(genres[number]);
+        } else {
+            i--;
+        }
+
+    }
+
+    let movieData = await fetchMovieData();
+    const genreMovies = [];
+
+    for (const genre of genreList) {
+        genreMovies.push(await fetchMoviesFromGenres(genre));
+    }
+
 
     res.render('index.ejs', {'css': 'main',
         'bannerImg': movieData.bannerUrl,
         'movieDescription': movieData.description,
         'movieTitle': movieData.title,
         'trending': movieData.trendingMovies,
-        'trendingMoviesImg': movieData.trendingMoviesImg});
+        'trendingMoviesImg': movieData.trendingMoviesImg,
+        'genreList': genreList,
+        'genreMovies': genreMovies});
 })
 
 async function fetchMovieData() {
