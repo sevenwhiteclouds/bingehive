@@ -10,6 +10,23 @@ app.get('/', async (req, res) => {
   res.render('index.ejs', {'css': 'main', 'bannerImg': bannerImg});
 })
 
+async function fetchMovieData() {
+    try {
+        const url = 'https://api.themoviedb.org/3/movie/popular?language=en-US';
+        const response = await fetch(url, apiOptions)
+        const data = await  response.json();
+        const index = getRandomNumFromLength(data.results.length)
+        const banner = await getBestBanner(data.results[index].id);
+        return {
+            bannerUrl: `https://image.tmdb.org/t/p/original/${banner}`,
+            description: data.results[index].overview,
+            title: data.results[index].original_title
+        };
+    } catch (err) {
+        console.error("APIerror:" + err);
+    }
+}
+
 async function fetchBanner() {
 
     try {
