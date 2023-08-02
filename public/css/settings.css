@@ -1,0 +1,55 @@
+html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: #141414;
+  color: white;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+a{
+  color:orange;
+  text-decoration: none;
+  text-align: left;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  height: 100%;
+}
+
+table {
+  height: 70%;
+  width: 70%;
+  border-collapse: collapse;
+  margin: 10px;
+  table-layout: fixed;
+  font-size: 30px;
+  font-family: "Arial", sans-serif;
+}
+
+td {
+  width: 33.33%;
+  vertical-align: top;
+}
+
+button{
+  padding: 20px;
+  color: red;
+  background-color: #c5c5c5;
+}
+
+#nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
