@@ -57,12 +57,14 @@ body {
 
 .row-title {
     padding-left: 15px;
-    font-size: 1.3em;
+    font-size: 1.8em;
+    margin: 25px 0;
+    color: #FDCC00;
 }
 
 .carousel {
     display: flex;
-    transition: transform 0.5s ease;
+    transition: transform 1s ease;
 }
 
 .carousel-item {

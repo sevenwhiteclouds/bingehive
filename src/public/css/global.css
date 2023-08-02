@@ -1,0 +1,57 @@
+* {
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+nav {
+    display: flex;
+    background-color: black;
+    align-items: center;
+}
+
+#sandwich {
+    width: 45px;
+    height: 45px;
+    padding: 10px 10px 10px 20px;
+
+}
+
+#logo-horizontal {
+    height: 60px;
+    padding: 5px 0 5px 20px;
+}
+
+#search-bar {
+    max-width: 600px;
+    min-width: 80px;
+    width: 100%;
+    height: 40px;
+    font-size: 1.2em;
+    color: #CCCCCC;
+    margin-left: 30px;
+    padding-left: 40px;
+    background-color: #4D4D4D;
+    background-image: url("/assets/search_icon.png");
+    background-repeat: no-repeat;
+    background-size: 20px;
+    background-position: 10px center;
+    border-radius: 10px;
+    border-style: none;
+    outline: none;
+}
+
+#nav-settings {
+    margin-left: auto;
+}
+
+#user-pfp {
+    width: 60px;
+    height: 60px;
+    margin-right: 3em;
+    margin-left: 1.5em;
+    margin-top: 6px;
+    border-radius: 10px;
+}

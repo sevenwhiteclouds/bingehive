@@ -1,24 +1,24 @@
+<!-- This is a basic framework and does not represent the final product -->
+
 <%- include('partials/header.ejs') %>
-<%- include('partials/nav.ejs') %>
 
-<div class="container">
-    <div class="banner">
-        <img src="" alt="banner image" class="banner-img">
-    </div>
+<div class="content-wrapper">
+    <div class="login-form">
+        <h1 class="login-title">Login to BingeHive W.I.P.</h1>
 
-    <div class="list-slide">
-        <h4 class="row-title">My List</h4>
-        <img src="" alt="list-item" class="cell">
-    </div>
+        <form method="POST">
+            <input type="text" class="username" name="username" placeholder="Username"> <br>
+            <input type="text" class="password" name="password" placeholder="Password"> <br>
+          <button class="login-btn">Login</button>
+        </form>
 
-    <div class="trending-slide">
-        <h4 class="row-title">Trending Now</h4>
-        <img src="" alt="trending-item" class="cell">
-    </div>
+      <% if (typeof loginError != "undefined" && loginError) { %>
+      <h3 class="error">Wrong credentials!</h3>
+      <% } %>
 
-    <div class="genre-slide">
-        <h4 class="row-title">Comedy</h4>
-        <img src="" alt="genre-item" class="cell">
+        <a href="/create-account">
+            <p class="create">Create Account</p>
+        </a>
     </div>
 
 </div>
