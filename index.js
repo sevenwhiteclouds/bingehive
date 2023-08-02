@@ -6,8 +6,14 @@ const apiOptions = require("./apiAccess.js");
 app.use(express.static("public"));
 
 app.get('/', async (req, res) => {
-  let bannerImg = await fetchBanner();
-  res.render('index.ejs', {'css': 'main', 'bannerImg': bannerImg});
+      let movieData = await fetchMovieData();
+
+    res.render('index.ejs', {'css': 'main',
+        'bannerImg': movieData.bannerUrl,
+        'movieDescription': movieData.description,
+        'movieTitle': movieData.title,
+        'trending': movieData.trendingMovies,
+        'trendingMoviesImg': movieData.trendingMoviesImg});
 })
 
 async function fetchMovieData() {
@@ -55,6 +61,14 @@ function getRandomNumFromLength(size) {
 app.get('/settings', (req,res) => {
   res.render('userSettings.ejs', {'css': 'settings'});
 })
+
+async function fetchMoviesFromGenres(genre) {
+    const url = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=3&sort_by=popularity.desc&with_genres=${genre}`;
+    const response = await fetch(url, apiOptions)
+    const data = await response.json();
+
+    return data.results;
+}
 
 app.listen(3000, () => {
   console.log("server started");
