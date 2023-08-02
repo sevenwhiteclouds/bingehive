@@ -1,0 +1,8 @@
+node_modules
+.DS_Store
+.git
+.cache
+.config
+.upm
+replit.nix
+replit_zip_error_log.txt
