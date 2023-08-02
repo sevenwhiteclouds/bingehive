@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
   res.render('index.ejs', {'css': 'main'});
 })
 
+app.get('/settings', (req,res) => {
+  res.render('userSettings.ejs', {'css': 'settings'});
+})
+
 app.listen(3000, () => {
   console.log("server started");
 })
