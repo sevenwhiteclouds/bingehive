@@ -17,10 +17,18 @@ async function fetchMovieData() {
         const data = await  response.json();
         const index = getRandomNumFromLength(data.results.length)
         const banner = await getBestBanner(data.results[index].id);
+        const trendingMovies = [];
+        const trendingMoviesImg = [];
+        data.results.forEach((movie) => {
+           trendingMovies.push(movie.original_title);
+           trendingMoviesImg.push(movie.backdrop_path);
+        });
         return {
             bannerUrl: `https://image.tmdb.org/t/p/original/${banner}`,
             description: data.results[index].overview,
-            title: data.results[index].original_title
+            title: data.results[index].original_title,
+            trendingMovies: trendingMovies,
+            trendingMoviesImg: trendingMoviesImg
         };
     } catch (err) {
         console.error("APIerror:" + err);
