@@ -106,6 +106,10 @@ function isAuthenticated(req, res, next){
   }
 }
 
+app.get("/home", isAuthenticated, (req, res) => {
+    res.redirect("home");
+});
+
 app.listen(3000, () => {
   console.log("server started");
 })
