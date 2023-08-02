@@ -23,6 +23,10 @@ async function fetchBanner() {
 
 }
 
+function getRandomNumFromLength(size) {
+    return Math.floor(Math.random() * size);
+}
+
 app.get('/settings', (req,res) => {
   res.render('userSettings.ejs', {'css': 'settings'});
 })
