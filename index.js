@@ -1,4 +1,14 @@
+const express = require("express");
+const app = express();
 const pool = require("./dbPool.js");
+
+const apiOptions = {
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: "";
+  }
+};
 
 testDb();
 
