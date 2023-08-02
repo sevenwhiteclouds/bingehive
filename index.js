@@ -110,6 +110,18 @@ app.get("/home", isAuthenticated, (req, res) => {
     res.redirect("home");
 });
 
+app.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  if (username === 'user1' && password === 'secret'){
+    res.session.authenticated = true;
+    res.redirect('/home');
+  } else {
+    res.render('index.ejs', {'css': 'login', 'loginError': true});
+  }
+});
+
 app.post("/", async(req, res) => {
   let username = req.body.username;
   let password = req.body.password;
