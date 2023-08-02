@@ -1,7 +1,8 @@
 const express = require("express");
+const mysql = require("mysql2");
+const dbAccess = mysql.createPool(require("./configs_DO_NOT_GITHUB.json").db);
+const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 const app = express();
-const dbAccess = require("./dbAccess.js");
-const apiOptions = require("./apiAccess.js");
 
 app.use(express.static("public"));
 
