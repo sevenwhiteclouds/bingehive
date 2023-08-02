@@ -3,6 +3,8 @@ const mysql = require("mysql2");
 const dbAccess = mysql.createPool(require("./configs_DO_NOT_GITHUB.json").db);
 const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 const app = express();
+const session = require('express-session');
+const bcrypt = require('bcrypt');
 
 app.use(express.static("public"));
 
@@ -93,6 +95,15 @@ async function fetchMoviesFromGenres(genre) {
     const data = await response.json();
 
     return data.results;
+}
+
+//functions
+function isAuthenticated(req, res, next){
+  if(!req.session.authenticated){
+    res.redirect("/");
+  } else {
+    next();
+  }
 }
 
 app.listen(3000, () => {
