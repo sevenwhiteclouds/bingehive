@@ -110,6 +110,38 @@ app.get("/home", isAuthenticated, (req, res) => {
     res.redirect("home");
 });
 
+app.post("/", async(req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  console.log("username: " + username);
+  console.log("password: " + password);
+  let hashedPwd = await bcrypt.hash(password, 10);
+
+  let sql = "SELECT * FROM user WHERE username = ?";
+  let rows = await executeSQL(sql, [username]);
+
+  if (rows === null || rows.length === 0) {
+    req.session.authenticated = false;
+    res.render("index", { "loginError": true });
+    return;
+  }
+
+  if(rows.length > 0){
+    hashedPwd = rows[0].password;
+  }
+
+  let passwordMatch = await bcrypt.compare(password, hashedPwd);
+  console.log("passwordMatch:" + passwordMatch);
+
+  if(passwordMatch){
+    req.session.authenticated = true;
+    res.render("home");
+  } else {
+    req.session.authenticated = false;
+    res.render("index",{"loginError": true});
+  }
+});
+
 app.listen(3000, () => {
   console.log("server started");
 })
