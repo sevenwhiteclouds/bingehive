@@ -5,9 +5,23 @@ const apiOptions = require("./apiAccess.js");
 
 app.use(express.static("public"));
 
-app.get('/', (req, res) => {
-  res.render('index.ejs', {'css': 'main'});
+app.get('/', async (req, res) => {
+  let bannerImg = await fetchBanner();
+  res.render('index.ejs', {'css': 'main', 'bannerImg': bannerImg});
 })
+
+async function fetchBanner() {
+
+    try {
+        const url = 'https://api.themoviedb.org/3/movie/popular';
+        const response = await fetch(url, apiOptions)
+        const data = await  response.json();
+        return 'https://image.tmdb.org/t/p/original' + data.results[0].backdrop_path;
+    } catch (err) {
+        console.error("APIerror:" + err);
+    }
+
+}
 
 app.get('/settings', (req,res) => {
   res.render('userSettings.ejs', {'css': 'settings'});
