@@ -1,0 +1,129 @@
+body {
+    background-color: #141414;
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.banner {
+    height: 40em;
+    position: relative;
+}
+
+.banner-info {
+    position: absolute;
+    top: 35%;
+    left: 4%;
+    max-width: 650px;
+    min-width: 300px;
+    min-height: 250px;
+    width: auto;
+    margin-right: 40%;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+}
+
+.banner-title {
+    font-size: 3em;
+    margin: 0;
+}
+
+.banner-desc {
+    font-size: 1.2em;
+    max-width: 100%;
+}
+
+.slide {
+    margin: 0 0 15px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cell {
+    height: 200px;
+    width: 400px;
+    padding: 0 2px;
+}
+
+.banner-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+
+.row-title {
+    padding-left: 15px;
+    font-size: 1.3em;
+}
+
+.carousel {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    flex: 0 0 0;
+}
+
+.carousel-button1 {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translate(-27%, -32%);
+    width: 40px;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.carousel-button2 {
+    position: absolute;
+    top: 50%;
+    transform: translate(24%, -32%);
+    width: 40px;
+    height: 200px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+@media screen and (max-width: 960px) {
+    .banner-title {
+        font-size: 2.5em;
+        margin: 0;
+    }
+
+    .banner-desc {
+        font-size: 1em;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .banner-title {
+        font-size: 2em;
+        margin: 0;
+    }
+
+    .banner-desc {
+        font-size: 1em;
+        max-width: 100%;
+    }
+}
