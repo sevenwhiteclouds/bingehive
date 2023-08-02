@@ -1,14 +1,7 @@
 const express = require("express");
 const app = express();
-const pool = require("./dbPool.js");
-
-const apiOptions = {
-  method: "GET",
-  headers: {
-    accept: "application/json",
-    Authorization: "";
-  }
-};
+const dbAccess = require("./dbAccess.js");
+const apiOptions = require("./apiAccess.js");
 
 // if testing the db table access and api info pull, uncomment the lines below.
 test();
