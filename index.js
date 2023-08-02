@@ -7,6 +7,15 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 
 app.use(express.static("public"));
+app.use(express.static("public"));
+app.set("view engine", "ejs");
+app.use(session ({
+  secret: "top secret!",
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(express.urlencoded({extended:true})); //to be able to parse Post parameters
 
 app.get('/', async (req, res) => {
   const genres = ['Action', 'Horror', 'Thriller', 'Western', 'Science Fiction', 'Drama', 'Romance',
