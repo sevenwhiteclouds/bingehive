@@ -1,8 +1,41 @@
 <div id="nav-container">
     <nav>
-        <img id="sandwich" src="/assets/menu_sandwich.png" alt="menu-sandwich">
 
-        <a href="/">
+        <div id="sandwich-dropdown">
+            <img id="sandwich" onclick="dropdownEvent()" src="/assets/menu_sandwich.png" alt="menu-sandwich">
+
+            <div class="dropdown-content">
+                <div class="main-choices">
+                    <h3 class="dropdown-choice" id="dropdown-genre" onclick="changeActive(this, <%= JSON.stringify(genres) %>)">GENRE</h3>
+                    <h3 class="dropdown-choice" id="dropdown-type" onclick="changeActive(this, ['Movies', 'Television', 'Anime'])">TYPE</h3>
+                    <h3 class="dropdown-choice" id="dropdown-lists" onclick="changeActive(this, ['TempList1', 'TempList2', 'TempList3'])">LISTS</h3>
+                </div>
+
+                <div id="sub-choices-dynamic">
+
+                   <% for (let i = 0; i < genres.length; i++) {
+                    if (i % 6 === 0) {
+
+                        if (i > 0 && i % 6 === 0) { %>
+                            </div>
+                       <% } %>
+                        <div class="sub-choices">
+                            <h4 class="sub-choice"><%= genres[i] %></h4>
+
+                    <%} else { %>
+                        <h4 class="sub-choice"><%= genres[i] %></h4>
+                   <% }%>
+
+                <% } %>
+                  
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <a href="/home">
             <img id="logo-horizontal" src="/assets/BingeHiveHorizontalLogo.png" alt="logo">
         </a>
 
@@ -13,4 +46,6 @@
         </a>
 
     </nav>
+
+    <script src="/js/sandwichDropdown.js"></script>
 </div>

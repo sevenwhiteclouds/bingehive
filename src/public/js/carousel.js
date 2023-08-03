@@ -1,7 +1,7 @@
 function createCarousel(elementID) {
     let currentIndex = 0;
-    // TODO: Temp hard-code. SIZE references how many cells fit on page. Will need to do dynamically.
-    const SIZE = 5;
+    // TODO: Temp hard-code. SIZE references how many cells fit on page. Will need to do dynamically somehow.
+    const SIZE = 4;
     // TODO: Temp hard-code. Lists are yet to be implemented
     const listLength = 3;
     const carousel = document.querySelector(`#${elementID}`);
