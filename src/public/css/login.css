@@ -44,6 +44,11 @@ body, html{
 
 .login-title {
   font-size: 4em;
+  margin: 0;
+}
+
+#create-account-pic {
+  margin: .6em;
 }
 
 .create {

@@ -93,3 +93,49 @@ window.onclick = function(event) {
       
     }
 }
+
+//////////////////////////////////// On click events ////////////////////////////////////
+
+function serverFunction(input) {
+  const actionText = input.innerText;
+  
+  fetch(`/category?genre=${actionText}`)
+    .then((response) => response.json())
+    .then((data) => changePage(data))
+    .catch((err) => console.error(`SERVER CALL FAILED: ${err}`));
+}
+
+function changePage(data) {
+  const homeContainer = document.querySelector('#home-container');
+  console.log(data)
+
+  homeContainer.innerHTML = 
+    `<h3 class='title'> ${data[0]} </h3>`
+
+  const movieRows = createMovieRows(data);
+
+  homeContainer.innerHTML += 
+    `<div class='subcategory-movies-wrapper'>
+        <div class='movie-row'> 
+          ${htmlString}
+        </div>
+     </div>`
+    
+}
+
+function createMovieRows(data) {
+
+  // Remove genre
+  data = data.splice(0, 1);
+  
+  let htmlString;
+
+  for (let i = 0; i < data.length; i++) {
+    for(let j = 0; j < data[i].length; j++) {
+      htmlString += `<div class='movie-cell'> <img src='https://image.tmdb.org/t/p/w780/${data[i][j].backdrop_path}' alt='movie-img'> </div>`
+    }
+  }
+
+  return htmlString;
+  
+}

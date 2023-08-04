@@ -9,11 +9,12 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+let userId = null;
 
 const genres = ['Action', 'Horror', 'Thriller', 'Western', 'Science Fiction', 'Drama', 'Romance',
                 'Comedy', 'Fantasy', 'Animation', 'Documentary', 'Mystery', 'Family'];
 
-// Same indexs as `genres` array - just in num format
+// Same indexes as `genres` array - just in num format
 const genreIDs = ['28', '27', '53', '37', '878', '18', '10749', '35', '14', '16', '99', '9648', '10751']
 
 app.use(express.static("public"));
@@ -50,7 +51,7 @@ app.get('/home', async (req, res) => {
 
         if (!genreList.includes(genres[number])){
             genreList.push(genres[number]);
-            genreMovies.push(await fetchMoviesFromGenres(genreIDs[number]));
+            genreMovies.push(await fetchMoviesFromGenres(genreIDs[number], 3));
         } else {
             i--;
         }
@@ -70,8 +71,17 @@ app.get('/home', async (req, res) => {
         'genres' : genres});
 })
 
-app.get('/settings', (req,res) => {
-  res.render('userSettings.ejs', {'css': 'settings', 'genres' : genres});
+app.get('/settings', async function (req,res) {
+  let sql = `SELECT * from user WHERE username = "${userId}"` ;
+  let rows = await executeSQL(sql);
+  res.render('userSettings.ejs', {'css': 'settings', 'genres' : genres, 'users' : rows});
+})
+
+app.get('/settings/delete', async function (req, res) {
+  let sql = `DELETE FROM user WHERE username = "${userId}"`;
+  let rows = await executeSQL(sql);
+  console.log(rows);
+  res.redirect('/');
 })
 
 app.listen(3000, () => {
@@ -124,35 +134,69 @@ async function fetchMovieData() {
     }
 }
 
-//TODO: Fix 404 banners
-async function fetchMoviesFromGenres(genre) {
-    const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=4&sort_by=popularity.desc&with_genres=${genre}`;
+async function fetchMoviesFromGenres(genre, page) {
+    const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc&with_genres=${genre}`;
     const response = await fetch(url, apiOptions)
     const data = await response.json();
 
     return data.results;
 }
 
+app.get('/category', async (req, res) => {
+  const genreParam = req.query.genre;
+  let pageParam = 1;
+  const movies = [];
+
+  movies.push(genreParam);
+
+  for (pageParam; pageParam <= 3; pageParam++){
+    movies.push(await fetchMoviesFromGenres(genreParam, pageParam));
+  }
+
+  res.send(movies);
+});
+
 app.post('/create-account', async(req, res) =>{
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
   const last = req.body.last;
-  const minLength = 5;
-  const maxLength = 10;
-  if (isInputValid(password, minLength, maxLength)){
-    console.log("Password is valid.");
-  }
-  else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Password must be 5-10 letters, numbers, and/or symbols only."});
+  const minLength = 8;
+  const maxLength = 32;
+  const minNameLength = 1;
+  const maxNameLength = 50;
+  const cleanFirst = first.trim();
+  const cleanLast = last.trim();
+  console.log(cleanFirst + " " + cleanLast);
+  if(username == password){
+     res.render('createAccount.ejs', {'css': 'login', "message": "Username can not match password."});
     return;
   }
-  if (isInputValid(username, minLength, maxLength)){
+  if (isUsernameValid(username, minLength, maxLength)){
     console.log("Username is valid.");
   }
   else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Username must be 5-10 letters, numbers, and/or symbols only."});
+    res.render('createAccount.ejs', {'css': 'login', "message": "Username must be 8-32 letters, numbers, and/or symbols only."});
     return;
+  }
+  if (isPasswordValid(password, minLength, maxLength)){
+    console.log("Password is valid.");
+  }
+  else {
+    res.render('createAccount.ejs', {'css': 'login', "message": "Password must be 8-32 letters, numbers, and/or symbols only."});
+    return;
+  }
+  if (isNameValid(first, minNameLength, maxNameLength)){
+    console.log("First name is valid");
+  }
+  else {
+    res.render('createAccount.ejs', {'css': 'login', "message": "Names only accept letters and hypens"});
+  }
+  if (isNameValid(last, minNameLength, maxNameLength)){
+    console.log("Last name is valid");
+  }
+  else {
+    res.render('createAccount.ejs', {'css': 'login', "message": "Names only accept letters and hypens"});
   }
   console.log("Username:" + username);
   console.log("Password:" + password);
@@ -166,7 +210,7 @@ app.post('/create-account', async(req, res) =>{
      }
      else {
        let sql = "INSERT INTO user (username, password, first, last) VALUES (?, ?, ? , ?);"
-       let params = [username, hash, first, last];
+       let params = [username, hash, cleanFirst, cleanLast];
        let rows = await executeSQL(sql, params);
        res.render('createAccount.ejs', {'css': 'login', "message": "User added!"});
      }
@@ -175,6 +219,7 @@ app.post('/create-account', async(req, res) =>{
 
 app.post("/login", async(req, res) => {
   let username = req.body.username;
+  userId = username;
   let password = req.body.password;
   console.log("username: " + username);
   console.log("password: " + password);
@@ -217,10 +262,26 @@ function isAuthenticated(req, res, next){
   }
 }
 
-function isInputValid(password, min, max){
+function isUsernameValid(username, min, max){
+  const chars = /^[a-zA-Z0-9]+$/;
+  const length = username.length;
+  const check = chars.test(username);
+  
+  return (length >= min && length <= max && check);
+}
+
+function isPasswordValid(password, min, max){
   const chars = /^[a-zA-Z0-9~!@#$%^&*()]+$/;
   const length = password.length;
   const check = chars.test(password);
   
-  return (length >= min && length <= max && check)
+  return (length >= min && length <= max && check);
+}
+
+function isNameValid(name, min, max){
+  const chars = /^[a-zA-Z -]+$/;
+  const length = name.length;
+  let check = chars.test(name);
+  
+  return (length >= min && length <= max && check);
 }

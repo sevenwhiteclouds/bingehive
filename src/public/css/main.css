@@ -40,6 +40,7 @@ body {
   margin: 0 0 15px 0;
   position: relative;
   overflow: hidden;
+  width: 300px;
 }
 
 .cell {
@@ -77,7 +78,7 @@ body {
   top: 50%;
   transform: translate(-27%, -32%);
   width: 40px;
-  height: 200px;
+  height: 202px;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
@@ -90,7 +91,7 @@ body {
   top: 50%;
   transform: translate(24%, -32%);
   width: 40px;
-  height: 200px;
+  height: 202px;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;

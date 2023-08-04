@@ -107,6 +107,10 @@ color: white;
   margin-left: auto;
 }
 
+#upload-account-pic {
+  margin: 0.6em;
+}
+
 #user-pfp {
   width: 60px;
   height: 60px;
@@ -120,8 +124,17 @@ color: white;
   display: inline;
 }
 
+#pfp-input {
+  display: none;
+}
+
 #dropdown-genre {
   color: white;
+}
+
+#imgdiv {
+  max-height: 300px;
+  max-width: 300px;
 }
 
 @media screen and (max-width: 428px) {

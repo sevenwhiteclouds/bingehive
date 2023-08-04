@@ -20,10 +20,10 @@
                             </div>
                        <% } %>
                         <div class="sub-choices">
-                            <h4 class="sub-choice"><%= genres[i] %></h4>
+                            <h4 class="sub-choice" onclick="serverFunction(this)"><%= genres[i] %></h4>
 
                     <%} else { %>
-                        <h4 class="sub-choice"><%= genres[i] %></h4>
+                        <h4 class="sub-choice" onclick="serverFunction(this)"><%= genres[i] %></h4>
                    <% }%>
 
                 <% } %>
