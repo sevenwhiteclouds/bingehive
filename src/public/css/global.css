@@ -36,12 +36,22 @@ nav {
 }
 
 .sub-choice {
-margin: 6px 0;
+  margin: 6px 0;
 }
 
 .sub-choice:hover {
-color: #FDCC00;
-cursor: pointer;
+  color: #FDCC00;
+  cursor: pointer;
+}
+
+.sub-choice a{
+  color: white;
+  text-decoration: none;
+}
+
+.sub-choice a:hover {
+  color: #FDCC00;
+  cursor: pointer;
 }
 
 .main-choices {
@@ -70,7 +80,7 @@ cursor: pointer;
 }
 
 .dropdown-choice:hover {
-color: white;
+  color: white;
 }
 
 .show {
@@ -133,8 +143,14 @@ color: white;
 }
 
 #imgdiv {
-  max-height: 300px;
-  max-width: 300px;
+  max-height: 600px;
+  max-width: 600px;
+}
+
+#create-account-pic {
+  cursor: pointer;
+  width: 150px;
+  height: 150px;
 }
 
 @media screen and (max-width: 428px) {

@@ -1,0 +1,118 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/nav.ejs') %>
+
+<div class="container" id="home-container">
+    <div class="banner">
+        <img src="<%= bannerUrl %>" alt="banner image" class="banner-img">
+        <div class="banner-info">
+            <h2 class="banner-title"><%= title %></h2>
+            <p class="banner-desc"><%= description %></p>
+        </div>
+    </div>
+
+    <div class="slide">
+        <h4 class="row-title">My Lists</h4>
+        <div class="carousel" id="list-carousel">
+            <div class="carousel-item">
+                <img src="/assets/ListPlaceholder.png" alt="list-item" class="cell">
+            </div>
+            <div class="carousel-item">
+                <img src="/assets/ListPlaceholder.png" alt="list-item" class="cell">
+            </div>
+            <div class="carousel-item">
+                <img src="/assets/ListPlaceholder.png" alt="list-item" class="cell">
+            </div>
+        </div>
+
+        <button class="carousel-button1 prev" id="b1">&#8249;</button>
+        <button class="carousel-button2 next" id="b2">&#8250;</button>
+    </div>
+
+    <div class="slide" id='trending-slide'>
+
+        <h4 class="row-title">Trending Now</h4>
+        <div class="carousel" id="Trending-carousel">
+
+            <% for (let i = 0; i < trendingShowsImg.length; i++) { %>
+                <div class="carousel-item">
+                    <img src="<%= `https://image.tmdb.org/t/p/w780/${trendingShowsImg[i]}` %>" alt="list-item" class="cell">
+                </div>
+            <% } %>
+
+        </div>
+
+        <button class="carousel-button1 prev" id="b3">&#8249;</button>
+        <button class="carousel-button2 next" id="b4">&#8250;</button>
+    </div>
+
+    <div class="slide">
+        <h4 class="row-title"><%= genreList[0] %></h4>
+        <div class="carousel" id="genre0-carousel">
+
+            <% for (let i = 0; i < genreShows[0].length; i++) { 
+                if (genreShows[0][i].backdrop_path != null) {%>
+                <div class="carousel-item">
+                    <img src="<%= `https://image.tmdb.org/t/p/w780/${genreShows[0][i].backdrop_path}` %>" alt="list-item" class="cell">
+                </div>
+            <% }} %>
+
+        </div>
+        <button class="carousel-button1 prev" id="b5">&#8249;</button>
+        <button class="carousel-button2 next" id="b6">&#8250;</button>
+    </div>
+
+    <div class="slide">
+        <h4 class="row-title"><%= genreList[1] %></h4>
+        <div class="carousel" id="genre1-carousel">
+
+            <% for (let i = 0; i < genreShows[1].length; i++) { 
+                if (genreShows[1][i].backdrop_path != null) {%>
+                <div class="carousel-item">
+                    <img src="<%= `https://image.tmdb.org/t/p/w780/${genreShows[1][i].backdrop_path}` %>" alt="list-item" class="cell">
+                </div>
+            <% }} %>
+
+        </div>
+        <button class="carousel-button1 prev" id="b7">&#8249;</button>
+        <button class="carousel-button2 next" id="b8">&#8250;</button>
+    </div>
+
+
+    <div class="slide">
+        <h4 class="row-title"><%= genreList[2] %></h4>
+        <div class="carousel" id="genre2-carousel">
+
+            <% for (let i = 0; i < genreShows[2].length; i++) { 
+                  if (genreShows[2][i].backdrop_path != null) {%>
+                <div class="carousel-item">
+                    <img src="<%= `https://image.tmdb.org/t/p/w780/${genreShows[2][i].backdrop_path}` %>" alt="list-item" class="cell">
+                </div>
+            <% }} %>
+
+        </div>
+        <button class="carousel-button1 prev" id="b9">&#8249;</button>
+        <button class="carousel-button2 next" id="b10">&#8250;</button>
+    </div>
+
+    <div class="slide">
+        <h4 class="row-title"><%= genreList[3] %></h4>
+        <div class="carousel" id="genre3-carousel">
+
+            <% for (let i = 0; i < genreShows[3].length; i++) { 
+                  if (genreShows[3][i].backdrop_path != null) { %>
+                <div class="carousel-item">
+                    <img src="<%= `https://image.tmdb.org/t/p/w780/${genreShows[3][i].backdrop_path}` %>" alt="list-item" class="cell">
+                </div>
+            <% }} %>
+
+        </div>
+        <button class="carousel-button1 prev" id="b11">&#8249;</button>
+        <button class="carousel-button2 next" id="b12">&#8250;</button>
+    </div>
+
+
+</div>
+
+<script src="/js/carousel.js"></script>
+
+<%- include('partials/footer.ejs') %>

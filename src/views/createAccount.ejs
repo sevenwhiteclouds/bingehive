@@ -4,9 +4,10 @@
     <div class="login-form">
         <h1 class="login-title">Create Account W.I.P.</h1>
         <label for="pfp-input"><img id="create-account-pic" src="assets/default_user.png"></label>
-
+        <input type="file" id="pfp-input" name="pfp-upload" accept="image/png, image/jpeg, image/jpg">
+      
         <form method="POST">
-            <input type="file" id="pfp-input" name="pfp-uploade" accept="image/png, image/jpeg, image/jpg">
+            <input type="hidden" id="submit-this-img" name="image"> <br>
             <input type="text" class="username" name="username" placeholder="Username"> <br>
             <input type="text" class="password" name="password" placeholder="Password"> <br>
                <input type="text" class="first" name="first" placeholder="First name"> <br>

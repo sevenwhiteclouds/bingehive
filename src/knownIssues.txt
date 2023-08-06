@@ -1,4 +1,0 @@
-carousel.js:
- - If page is loaded and a full carousel fits (List carousel being length of 3 for example), no arrows will appear (intended) however, if the user reduces the page width to cover 1 or more lists, the arrows will not appear unless page is refreshed
-
- - When the last item is showed in the carousel, if the user increases the site width, it will leave blank space until an arrow is pressed

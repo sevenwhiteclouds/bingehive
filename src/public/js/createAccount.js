@@ -1,4 +1,6 @@
 const pfpInput = document.querySelector("#pfp-input");
+const defaultPfp = document.querySelector("#create-account-pic");
+let cropper;
 
 const modal = new tingle.modal({
   footer: true,
@@ -6,22 +8,24 @@ const modal = new tingle.modal({
   closeMethods: [],
   closeLabel: "Close",
 
-  onOpen: function() {
-  },
-
-  //onClose: function() {
-  //},
+//  onOpen: function() {
+//  },
+//
+//  onClose: function() {
+//  },
 
   beforeOpen: function() {
-    let image = document.querySelector("#crop-this");
+    let croppingImage = document.querySelector("#crop-this");
 
-    new Cropper(image, {
-      viewMode: 2,
-      ratio: 1 / 1,
+    cropper  = new Cropper(croppingImage, {
+      viewMode: 3,
+      aspectRatio: 1 / 1,
       dragMode: "move",
-      cropBoxMovable: false,
       cropBoxResizable: false,
       checkOrientation: false,
+      wheelZoomRatio: 0.3,
+      minCropBoxWidth: 300,
+      minCropBoxHeight: 300
     });
   }
 });
@@ -31,6 +35,8 @@ modal.addFooterBtn("Cancel", "tingle-btn tingle-btn--secondary", function() {
 });
 
 modal.addFooterBtn("Save", "tingle-btn tingle-btn--primary", function() {
+  defaultPfp.src = cropper.getCroppedCanvas().toDataURL();
+  document.querySelector("#submit-this-img").value = cropper.getCroppedCanvas().toDataURL();
   modal.close();
 });
 
