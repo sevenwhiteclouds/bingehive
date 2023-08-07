@@ -6,25 +6,16 @@
         <label for="pfp-input"><img id="create-account-pic" src="assets/default_user.png"></label>
         <input type="file" id="pfp-input" name="pfp-upload" accept="image/png, image/jpeg, image/jpg">
       
-        <form method="POST">
-            <input type="hidden" id="submit-this-img" name="image"> <br>
-            <input type="text" class="username" name="username" placeholder="Username"> <br>
-            <input type="text" class="password" name="password" placeholder="Password"> <br>
-               <input type="text" class="first" name="first" placeholder="First name"> <br>
-               <input type="text" class="last" name="last" placeholder="Last name"> <br>
-            <button class="login-btn">Create</button>
-        </form>
-      <br>
-      
-      <% if (typeof message != "undefined"){ %>
-          <h3 class="message"><%=message%></h3>
-        <% } %>
+        <input type="text" class="username" name="username" placeholder="Username"> <br>
+        <input type="password" class="password" name="password" placeholder="Password"> <br>
+        <input type="text" class="first" name="first" placeholder="First name"> <br>
+        <input type="text" class="last" name="last" placeholder="Last name"> <br>
+        <button class="login-btn" id="create-button">Create</button>
 
-        <a href="/">
-            <p class="create">Login</p>
-        </a>
+        <br>
+        <h3 class="message" id="server-message"></h3>
+        <a href="/"><p class="create">Login</p></a>
     </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

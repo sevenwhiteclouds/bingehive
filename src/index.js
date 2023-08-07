@@ -1,14 +1,39 @@
 // uncomment line below to run db and api test
 // const test = require("./test.js");
-const express = require("express");
+
+// multer, picture upload middleware
+const multer = require("multer");
+const multerStorage = multer.memoryStorage();
+const upload = multer();
+
+// database and api access
 const mysql = require("mysql2");
 const dbAccess = mysql.createPool(require("./configs_DO_NOT_GITHUB.json").db);
 const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
-const secret = require("./configs_DO_NOT_GITHUB.json").sessionsSecret;
-const app = express();
+
+// sessions
 const session = require('express-session');
+const secret = require("./configs_DO_NOT_GITHUB.json").sessionsSecret;
+
+// password handling
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
+// express
+const express = require("express");
+const app = express();
+app.use(express.static("public"));
+app.set("view engine", "ejs");
+
+app.use(session ({
+  secret: secret, 
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(express.urlencoded({extended:true})); //to be able to parse Post parameters 
+
+// idk?
 let userId = null;
 
 // Change genre arrays to object when time permits. Inefficient to use arrays
@@ -22,17 +47,6 @@ const tvGenreIDs = [10759, 16, 35, 80, 99, 18, 10751, 9648, 10764, 10765, 10766,
 // Same indexes as `genres` array - just in num format
 const genreIDs = ['28', '27', '53', '37', '878', '18', '10749', '35', '14', '16', '99', '9648', '10751']
 const types = ['Movies', 'Television'];
-
-app.use(express.static("public"));
-app.set("view engine", "ejs");
-
-app.use(session ({
-  secret: secret, 
-  resave: true,
-  saveUninitialized: true
-}));
-
-app.use(express.urlencoded({extended:true})); //to be able to parse Post parameters 
 
 // Sends user straight to login. Most aesthetic for URL.
 app.get('/', async (req, res) => {
@@ -48,7 +62,6 @@ app.get('/create-account', async (req, res) => {
 })
 
 app.get('/movies', async (req, res) => {
-
     const genreList = [];
     const genreMovies = [];
   
@@ -64,7 +77,6 @@ app.get('/movies', async (req, res) => {
     }
 
     let movieData = await fetchMovieData();
-
 
     res.render('home.ejs', {'css': 'main',
         'bannerImg': movieData.bannerUrl,
@@ -212,9 +224,7 @@ async function fetchShowsFromGenres(genre, page) {
     const data = await response.json();
 
   return data.results;
-  
 }
-
 
 async function fetchMoviesFromGenres(genre, page) {
     const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&region=US&sort_by=popularity.desc&watch_region=US&with_genres=${genre}&with_origin_country=US&with_original_language=en`;
@@ -242,63 +252,71 @@ app.get('/category', async (req, res) => {
   res.send(movies);
 });
 
-app.post('/create-account', async(req, res) =>{
+app.post('/create-account', upload.none(), async (req, res) =>{
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
   const last = req.body.last;
+
+  // TODO: make sure that we do have a check if one or more field is empty everything is rejected
   const minLength = 8;
   const maxLength = 32;
   const minNameLength = 1;
   const maxNameLength = 50;
   const cleanFirst = first.trim();
   const cleanLast = last.trim();
+
   console.log(cleanFirst + " " + cleanLast);
-  if(username == password){
-     res.render('createAccount.ejs', {'css': 'login', "message": "Username can not match password."});
+
+  if(username == password) {
+    res.send("Username can not match password.");
     return;
   }
-  if (isUsernameValid(username, minLength, maxLength)){
+  if (isUsernameValid(username, minLength, maxLength)) {
     console.log("Username is valid.");
   }
   else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Username must be 8-32 letters, numbers, and/or symbols only."});
+    res.send("Username must be 8-32 letters, numbers, and/or symbols only.");
     return;
   }
-  if (isPasswordValid(password, minLength, maxLength)){
+  if (isPasswordValid(password, minLength, maxLength)) {
     console.log("Password is valid.");
   }
   else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Password must be 8-32 letters, numbers, and/or symbols only."});
+    res.send("Password must be 8-32 letters, numbers, and/or symbols only.");
     return;
   }
-  if (isNameValid(first, minNameLength, maxNameLength)){
+  if (isNameValid(first, minNameLength, maxNameLength)) {
     console.log("First name is valid");
   }
   else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Names only accept letters and hypens"});
+    res.send("Names only accept letters and hypens");
   }
-  if (isNameValid(last, minNameLength, maxNameLength)){
+  if (isNameValid(last, minNameLength, maxNameLength)) {
     console.log("Last name is valid");
   }
   else {
-    res.render('createAccount.ejs', {'css': 'login', "message": "Names only accept letters and hypens"});
+    res.send("Names only accept letters and hypens");
   }
+
   console.log("Username:" + username);
   console.log("Password:" + password);
+
   bcrypt.hash(password, saltRounds, async function(err, hash) {
      console.log("Hashed Pswd: " + hash);
      let sql1 = "SELECT COUNT(*) as count from user where username = ?";
      let row = await executeSQL(sql1, [username]);
      let count = row[0].count;
      if(count > 0){
-       res.render('createAccount.ejs', {'css': 'login', "message": "Username taken"});
+       res.send("Username taken");
      }
      else {
        let sql = "INSERT INTO user (username, password, first, last) VALUES (?, ?, ? , ?);"
        let params = [username, hash, cleanFirst, cleanLast];
        let rows = await executeSQL(sql, params);
-       res.render('createAccount.ejs', {'css': 'login', "message": "User added!"});
+
+       // TODO: should be a redirect to the homepage with session also need to send session as cookie to user
+       res.send("User added!");
      }
   });
 });
