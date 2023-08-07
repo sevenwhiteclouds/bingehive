@@ -67,9 +67,11 @@ createButton.addEventListener("click", async () => {
     formData.append("pfp", blob);
   }
 
-  fetch("/create-account", {method: "POST", body: formData}).then(response => response.text()).
-  then(result => {
+  let response = await fetch("/create-account", {redirect: "manual", method: "POST", body: formData});
+  if (response.type == "opaqueredirect") {
+    window.location.replace("/movies");
+  } else {
     serverMessage.innerHTML = "";
-    serverMessage.innerHTML = result;
-  });
+    serverMessage.innerHTML = await response.text();
+  }
 });
