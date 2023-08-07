@@ -7,7 +7,7 @@
     </tr>
     <tr>
       <td>Membership</td>
-      <td>Username: <%=users[0].username%><br>Password: </td>
+      <td>Username: <%=users.username%><br>Password: </td>
       <td><div id="updateBtn">Change username</div><br><div id="updatePswd">Change password</div></td>
     </tr>
     <tr>
@@ -15,7 +15,7 @@
     </tr>
     <tr>
       <td>Profiles</td>
-      <td><img src="assets/default_user.png" width = "150" height = "100" alt="second"> <%=users[0].first + " " + users[0].last%></td>
+      <td><img src="assets/default_user.png" width = "150" height = "100" alt="second"> <%=users.first + " " + users.last%></td>
 
     </tr>
     <tr>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
       <td>Delete Account:</td>
-      <td><a href="/settings/delete?username=<%users[0].username%>">Yes, I would like to delete my account</td>
+      <td><a href="/settings/delete?username=<%users.username%>">Yes, I would like to delete my account</td>
       <td><form action="/logout"><button>Log out</button></form></td>
        <% if (typeof message != "undefined"){ %>
           <h3 class="message"><%=message%></h3>

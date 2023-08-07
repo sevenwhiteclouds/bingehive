@@ -35,7 +35,7 @@ modal.addFooterBtn("Save", "tingle-btn tingle-btn--primary", function() {
 });
 
 pfpInput.addEventListener("change", () => {
-  if (pfpInput.files[0] != undefined) {
+  if (pfpInput.files[0] !== undefined) {
     modal.setContent(`<div id="imgdiv"><img src="${URL.createObjectURL(pfpInput.files[0])}" id="crop-this"></div>`);
     modal.open();
   }
@@ -59,7 +59,7 @@ createButton.addEventListener("click", async () => {
   formData.append("first", firstField.value);
   formData.append("last", lastField.value);
 
-  if (cropper != undefined) {
+  if (cropper !== undefined) {
     let blob = await new Promise(resolve => {
       cropper.getCroppedCanvas().toBlob(blob => resolve(blob));
     });
@@ -67,9 +67,9 @@ createButton.addEventListener("click", async () => {
     formData.append("pfp", blob);
   }
 
-  // TODO: still need to improve this
+  // TODO: still need to improve this redirect
   let response = await fetch("/create-account", {redirect: "manual", method: "POST", body: formData});
-  if (response.type == "opaqueredirect") {
+  if (response.type === "opaqueredirect") {
     window.location.replace("/movies");
   } else {
     serverMessage.innerHTML = "";

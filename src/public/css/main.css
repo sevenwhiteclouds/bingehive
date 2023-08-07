@@ -162,6 +162,19 @@ body {
   width: 400px;
 }
 
+.modal-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-top img {
+  width: 100%;
+}
+
+.modal-bottom {
+  color: black;
+}
+
 @media screen and (max-width: 1680px) {
   .movie-row {
     grid-template-columns: repeat(3, 1fr);

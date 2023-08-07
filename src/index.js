@@ -29,11 +29,9 @@ app.use(express.urlencoded({ extended: true })); //to be able to parse Post para
 app.use(session({
   secret: secret,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  // cookie: {secure: true}
 }));
-
-// idk?
-let userId = null;
 
 // Change genre arrays to object when time permits. Inefficient to use arrays
 const genres = ['Action', 'Horror', 'Thriller', 'Western', 'Science Fiction', 'Drama', 'Romance',
@@ -57,6 +55,7 @@ app.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
+// TODO: this needs middleware to check if user is already logged in
 app.get('/login', async (req, res) => {
   res.render('index.ejs', { 'css': 'login' });
 })
@@ -75,20 +74,20 @@ app.get('/fetchMovieData', async (req, res) => {
 });
 
 app.get('/settings/delete', async function(req, res) {
-  let sql = `DELETE FROM user WHERE username = "${userId}"`;
+  let sql = `DELETE FROM user WHERE username = "${req.session.userId}"`;
   let rows = await executeSQL(sql);
-  console.log(rows);
   res.redirect('/');
 })
 
 app.get('/settings', isAuthenticated, async function(req, res) {
-  let sql = `SELECT * from user WHERE username = "${userId}"`;
-  let rows = await executeSQL(sql);
-  res.render('userSettings.ejs', {
-    'css': 'settings', 'genres': genres, 'users': rows,
-    'genreIDs': genreIDs,
-    'types': types
-  });
+  let sql = `SELECT * FROM user WHERE user_id = '${req.session.userId}'`;
+  let rows = (await executeSQL(sql))[0];
+
+  res.render('userSettings.ejs', { 'css': 'settings',
+                                  'genres': genres,
+                                  'users': rows,
+                                  'genreIDs': genreIDs,
+                                  'types': types });
 })
 
 app.get('/category', async (req, res) => {
@@ -138,7 +137,7 @@ app.get('/movies', async (req, res) => {
     'genres': genres,
     'genreIDs': genreIDs,
     'types': types,
-    'Moviedata': movieData.data
+    'movieData': movieData.data
   });
 })
 
@@ -258,32 +257,31 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
 
       let uploadStatus;
 
-      if (image != undefined) {
+      if (image !== undefined) {
         uploadStatus = await s3Upload(image.buffer);
       }
 
-      if (uploadStatus != undefined) {
+      if (uploadStatus !== undefined) {
         sql = `UPDATE user SET pic = ? WHERE user_id = ${rows.insertId}`;
         params = [uploadStatus.key];
         await executeSQL(sql, params);
       }
 
       // TODO: should be a redirect to the homepage with session. also, need to send session as a cookie to user.
-      res.redirect("/movies");
+      res.send("User added!");
     }
   });
 });
 
 app.post("/login", async (req, res) => {
   let username = req.body.username;
-  userId = username;
   let password = req.body.password;
-  console.log("username: " + username);
-  console.log("password: " + password);
   let hashedPwd = "";
-
   let sql = "SELECT * FROM user WHERE username = ?";
   let rows = await executeSQL(sql, [username]);
+
+  console.log("username: " + username);
+  console.log("password: " + password);
 
   if (rows === null || rows.length === 0) {
     req.session.authenticated = false;
@@ -299,6 +297,7 @@ app.post("/login", async (req, res) => {
   console.log("passwordMatch:" + passwordMatch + hashedPwd + password);
 
   if (passwordMatch) {
+    req.session.userId = rows[0].user_id;
     req.session.authenticated = true;
     res.redirect('/movies');
   } else {
@@ -318,7 +317,6 @@ function isAuthenticated(req, res, next) {
 function getRandomNumFromLength(size) {
   return Math.floor(Math.random() * size);
 }
-
 
 async function executeSQL(query, params) {
   return new Promise((resolve, reject) => {

@@ -36,7 +36,7 @@
             <% for (let i = 0; i < trendingMoviesImg.length; i++) { %>
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${trendingMoviesImg[i]}` %>" alt="list-item" class="cell">
-                    <div class='hover' onclick='modalOpen(<% Moviedata %>)' id='modal#<%= i %>'>
+                    <div class='hover' onclick='modalOpen(<%= JSON.stringify(movieData.results[i]) %>)' id='modal#<%= i %>'>
                         <h4 class="hover-movie-title"><%= trending[i] %></h4>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                 if (genreMovies[0][i].backdrop_path != null) {%>
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${genreMovies[0][i].backdrop_path}` %>" alt="list-item" class="cell">
-                    <div class='hover'>
+                    <div class='hover' onclick='modalOpen(<%= JSON.stringify(genreMovies[0][i]) %>)' id='modal#<%= i %>'>
                         <h4 class="hover-movie-title"><%= genreMovies[0][i].title %></h4>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 if (genreMovies[1][i].backdrop_path != null) {%>
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${genreMovies[1][i].backdrop_path}` %>" alt="list-item" class="cell">
-                    <div class='hover'>
+                    <div class='hover' onclick='modalOpen(<%= JSON.stringify(genreMovies[1][i]) %>)' id='modal#<%= i %>'>
                         <h4 class="hover-movie-title"><%= genreMovies[1][i].title %></h4>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                   if (genreMovies[2][i].backdrop_path != null) {%>
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${genreMovies[2][i].backdrop_path}` %>" alt="list-item" class="cell">
-                    <div class='hover'>
+                    <div class='hover' onclick='modalOpen(<%= JSON.stringify(genreMovies[2][i]) %>)' id='modal#<%= i %>'>
                         <h4 class="hover-movie-title"><%= genreMovies[2][i].title %></h4>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                   if (genreMovies[3][i].backdrop_path != null) { %>
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${genreMovies[3][i].backdrop_path}` %>" alt="list-item" class="cell">
-                    <div class='hover'>
+                    <div class='hover' onclick='modalOpen(<%= JSON.stringify(genreMovies[3][i]) %>)' id='modal#<%= i %>'>
                         <h4 class="hover-movie-title"><%= genreMovies[3][i].title %></h4>
                     </div>
                 </div>

@@ -7,42 +7,19 @@ var modal = new tingle.modal({
   closeMethods: ['overlay', 'escape'],
   closeLabel: "Close",
   cssClass: ['movie-modal'],
-  onOpen: function() {
-    console.log('modal open');
-  },
-  onClose: function() {
-    console.log('modal closed');
-  },
-  beforeClose: function() {
-    // here's goes some logic
-    // e.g. save content before closing the modal
-    return true; // close the modal
-    return false; // nothing happens
-  }
 });
 
-// set content
-modal.setContent('<h1>here\'s some content</h1>');
-
-// add a button
-modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
-  // here goes some logic
-  modal.close();
-});
-
-// add another button
-modal.addFooterBtn('Dangerous action !', 'tingle-btn tingle-btn--danger', function() {
-  // here goes some logic
-  modal.close();
-});
-
-// allMovies.forEach((element) => {
-//   element.addEventListener('click', (data) => {
-//     modalOpen(data);
-//   });
-// });
-
-function modalOpen(data, index) {
+function modalOpen(data) {
+  modal.setContent(`
+    <div class="modal-content-wrapper">
+        <div class="modal-top">
+            <img src="https://image.tmdb.org/t/p/original/${data.backdrop_path}" alt="content-img">
+        </div>
+        <div class="modal-bottom">
+            <h2 class="modal-title">${data.original_title}</h2>
+            <p class="modal-description">${data.overview}</p>
+        </div>
+     </div>
+  `)
   modal.open();
-  console.log(data);
 }
