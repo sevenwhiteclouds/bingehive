@@ -7,22 +7,24 @@ const s3Access = new s3({
   secretAccessKey: s3Configs.secretAccessKey
 });
 
-async function s3Upload(file, name) {
-  let success = true;
+async function s3Upload(file) {
+  let name = crypto.randomUUID()
+
   const uploadParams = {
     Bucket: s3Configs.name,
     Body: file,
     Key: name
   }
 
+  let uploadStatus;
+
   try {
-    await s3Access.upload(uploadParams).promise();
+    uploadStatus = await s3Access.upload(uploadParams).promise();
   } catch (e) {
-    console.log("S3 upload failed");
-    success = false;
+    console.log("From s3.js: file upload failed!");
   }
 
-  return success;
+  return uploadStatus;
 }
 
 function s3Download(file) {

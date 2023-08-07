@@ -17,18 +17,18 @@ async function test() {
   console.log(await executeSQL("SELECT * FROM list"));
   console.log(await executeSQL("SELECT * FROM list_entry"));
 
-  // everything below grabs a movie from list_entry table and then calls tmdb api for info
-  let scifiListId = (await executeSQL(`SELECT list_id 
-                                       FROM list 
-                                       WHERE list_name = 'Scifi favs'`))[0].list_id;
+  // uncomment when there is entries on the lists table
+  //let scifiListId = (await executeSQL(`SELECT list_id 
+  //                                     FROM list 
+  //                                     WHERE list_name = 'Scifi favs'`))[0].list_id;
 
-  let url = (await executeSQL(`SELECT title_id
-                                  FROM list_entry
-                                  WHERE list_id = ${scifiListId}
-                                  LIMIT 1`))[0].title_id;
+  //let url = (await executeSQL(`SELECT title_id
+  //                                FROM list_entry
+  //                                WHERE list_id = ${scifiListId}
+  //                                LIMIT 1`))[0].title_id;
 
-  let movieInfo = await (await fetch(url, apiOptions)).json();
-  console.log(movieInfo);
+  //let movieInfo = await (await fetch(url, apiOptions)).json();
+  //console.log(movieInfo);
 }
 
-module.export = test();
+test();

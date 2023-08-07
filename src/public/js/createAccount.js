@@ -19,8 +19,8 @@ const modal = new tingle.modal({
       cropBoxResizable: false,
       checkOrientation: false,
       wheelZoomRatio: 0.3,
-      minCropBoxWidth: 300,
-      minCropBoxHeight: 300
+      minCropBoxWidth: 150,
+      minCropBoxHeight: 150
     });
   }
 });

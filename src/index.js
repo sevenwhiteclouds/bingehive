@@ -1,10 +1,7 @@
-// uncomment line below to run db and api test
-// const test = require("./test.js");
-
 // multer, picture upload middleware
 const multer = require("multer");
-// TODO: figure out how to clean up the upload folder when file is uploaded
-const upload = multer({dest: "./uploads_DO_NOT_GITHUB/"});
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 // database and api access
 const mysql = require("mysql2");
@@ -318,10 +315,15 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
       let params = [username, hash, cleanFirst, cleanLast];
       let rows = await executeSQL(sql, params);
 
-      // TODO: test to see what happens if user doesn't submit a picture. aka, "undefined" is sent to s3.
-      if ((await s3Upload(fs.createReadStream(image.path), image.filename))) {
+      let uploadStatus;
+
+      if (image != undefined) {
+        uploadStatus = await s3Upload(image.buffer);
+      }
+
+      if (uploadStatus != undefined) {
         sql = `UPDATE user SET pic = ? WHERE user_id = ${rows.insertId}`;
-        params = [image.filename];
+        params = [uploadStatus.key];
         await executeSQL(sql, params);
       }
 
