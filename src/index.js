@@ -318,6 +318,7 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
       let params = [username, hash, cleanFirst, cleanLast];
       let rows = await executeSQL(sql, params);
 
+      // TODO: test to see what happens if user doesn't submit a picture. aka, "undefined" is sent to s3.
       if ((await s3Upload(fs.createReadStream(image.path), image.filename))) {
         sql = `UPDATE user SET pic = ? WHERE user_id = ${rows.insertId}`;
         params = [image.filename];
