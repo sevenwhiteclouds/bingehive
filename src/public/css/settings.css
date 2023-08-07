@@ -20,7 +20,7 @@ a{
 
 .table-container {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   height: 100%;
 }
@@ -42,9 +42,16 @@ td {
 
 button{
   padding: 20px;
-  color: red;
+  color: orange;
   background-color: #c5c5c5;
 }
+
+#updateBtn, #updatePswd{
+  color:orange;
+}
+
+
+
 
 #nav-container {
   position: fixed;

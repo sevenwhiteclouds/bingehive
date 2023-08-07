@@ -49,12 +49,16 @@ body {
   padding: 0 2px;
 }
 
+.hover:hover{
+  opacity: 100;
+  transition: visibility 0s, opacity 0.2s linear;
+}
+
 .banner-img {
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
-
 
 .row-title {
   padding-left: 15px;
@@ -63,12 +67,34 @@ body {
   color: #FDCC00;
 }
 
+.hover {
+  display: flex;
+  opacity: 0;
+  flex-direction: column;
+  position: absolute;
+  height: 99%;
+  width: 100%;
+  text-align: center;
+  top: -1px;
+  left: 2px;
+  background-color: rgba(0, 0, 0, 50%);
+  cursor: pointer;
+  user-select: none;
+}
+
+.hover-movie-title {
+  margin: auto 0;
+  padding: 40px;
+  font-size: 1.5em;
+}
+
 .carousel {
   display: flex;
   transition: transform 1s ease;
 }
 
 .carousel-item {
+  position: relative;
   flex: 0 0 0;
 }
 
@@ -160,7 +186,7 @@ body {
     font-size: 1em;
     max-width: 100%;
   }
-  
+
 }
 
 @media screen and (max-width: 826px) {
@@ -171,14 +197,14 @@ body {
 }
 
 @media screen and (max-width: 650px) {
-.banner-title {
-  font-size: 2em;
-  margin: 0;
-}
+  .banner-title {
+    font-size: 2em;
+    margin: 0;
+  }
 
-.banner-desc {
-  font-size: 1em;
-  max-width: 100%;
-}
-  
+  .banner-desc {
+    font-size: 1em;
+    max-width: 100%;
+  }
+
 }

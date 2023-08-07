@@ -3,13 +3,17 @@
 
 // multer, picture upload middleware
 const multer = require("multer");
-const multerStorage = multer.memoryStorage();
-const upload = multer();
+// TODO: figure out how to clean up the upload folder when file is uploaded
+const upload = multer({dest: "./uploads_DO_NOT_GITHUB/"});
 
 // database and api access
 const mysql = require("mysql2");
 const dbAccess = mysql.createPool(require("./configs_DO_NOT_GITHUB.json").db);
 const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
+
+// s3 bucket
+const { s3Upload, s3Download } = require('./s3.js');
+const fs = require("fs");
 
 // sessions
 const session = require('express-session');
@@ -24,7 +28,7 @@ const express = require("express");
 const app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true })); //to be able to parse Post parameters 
+app.use(express.urlencoded({ extended: true })); //to be able to parse Post parameters
 app.use(session({
   secret: secret,
   resave: true,
@@ -76,7 +80,7 @@ app.get('/movies', async (req, res) => {
 
   let movieData = await fetchMovieData();
 
-  res.render('home.ejs', {
+  res.render('movies.ejs', {
     'css': 'main',
     'bannerImg': movieData.bannerUrl,
     'movieDescription': movieData.description,
@@ -87,7 +91,8 @@ app.get('/movies', async (req, res) => {
     'genreMovies': genreMovies,
     'genres': genres,
     'genreIDs': genreIDs,
-    'types': types
+    'types': types,
+    'Moviedata': movieData.data
   });
 })
 
@@ -155,7 +160,8 @@ async function fetchMovieData() {
       description: data.results[index].overview,
       title: data.results[index].original_title,
       trendingMovies: trendingMovies,
-      trendingMoviesImg: trendingMoviesImg
+      trendingMoviesImg: trendingMoviesImg,
+      data: data
     };
   } catch (err) {
     console.error("APIerror:" + err);
@@ -260,9 +266,9 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
   const first = req.body.first;
   const last = req.body.last;
   // TODO: put server checks in place so user can only upload pictures, also file size?
-  // also, maybe there's a better way intead of constantly sending the same image everytime create button 
+  // also, maybe there's a better way intead of constantly sending the same image everytime create button
   // is clicked on client side.
-  const pfp = req.file;
+  const image = req.file;
 
   // TODO: make sure that we do have a check if one or more field is empty everything is rejected
   const minLength = 8;
@@ -272,37 +278,27 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
   const cleanFirst = first.trim();
   const cleanLast = last.trim();
 
-  console.log(cleanFirst + " " + cleanLast);
+  console.log("First name/Last name: " + cleanFirst + " " + cleanLast);
 
-  if (username == password) {
+  if (username === password) {
     res.send("Username can not match password.");
     return;
   }
-  if (isUsernameValid(username, minLength, maxLength)) {
-    console.log("Username is valid.");
-  }
-  else {
+  if (!isUsernameValid(username, minLength, maxLength)) {
     res.send("Username must be 8-32 letters, numbers, and/or symbols only.");
     return;
   }
-  if (isPasswordValid(password, minLength, maxLength)) {
-    console.log("Password is valid.");
-  }
-  else {
+  if (!isPasswordValid(password, minLength, maxLength)) {
     res.send("Password must be 8-32 letters, numbers, and/or symbols only.");
     return;
   }
-  if (isNameValid(first, minNameLength, maxNameLength)) {
-    console.log("First name is valid");
-  }
-  else {
+  if (!isNameValid(first, minNameLength, maxNameLength)) { // First Name
     res.send("Names only accept letters and hypens");
+    return;
   }
-  if (isNameValid(last, minNameLength, maxNameLength)) {
-    console.log("Last name is valid");
-  }
-  else {
+  if (!isNameValid(last, minNameLength, maxNameLength)) { // No Last Name
     res.send("Names only accept letters and hypens");
+    return;
   }
 
   console.log("Username:" + username);
@@ -310,7 +306,7 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
 
   bcrypt.hash(password, saltRounds, async function(err, hash) {
     console.log("Hashed Pswd: " + hash);
-    let sql1 = "SELECT COUNT(*) as count from user where username = ?";
+    let sql1 = "SELECT COUNT(*) as count FROM user where username = ?";
     let row = await executeSQL(sql1, [username]);
     let count = row[0].count;
     if (count > 0) {
@@ -320,6 +316,12 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
       let sql = "INSERT INTO user (username, password, first, last) VALUES (?, ?, ? , ?);"
       let params = [username, hash, cleanFirst, cleanLast];
       let rows = await executeSQL(sql, params);
+
+      if ((await s3Upload(fs.createReadStream(image.path), image.filename))) {
+        sql = `UPDATE user SET pic = ? WHERE user_id = ${rows.insertId}`;
+        params = [image.filename];
+        await executeSQL(sql, params);
+      }
 
       // TODO: should be a redirect to the homepage with session. also, need to send session as a cookie to user.
       res.send("User added!");
@@ -382,7 +384,7 @@ function isUsernameValid(username, min, max) {
   const length = username.length;
   const check = chars.test(username);
 
-  return (length >= min && length <= max && check);
+  return ((length >= min) && (length <= max) && (check));
 }
 
 function isPasswordValid(password, min, max) {
@@ -390,7 +392,7 @@ function isPasswordValid(password, min, max) {
   const length = password.length;
   const check = chars.test(password);
 
-  return (length >= min && length <= max && check);
+  return ((length >= min) && (length <= max) && (check));
 }
 
 function isNameValid(name, min, max) {
@@ -398,5 +400,5 @@ function isNameValid(name, min, max) {
   const length = name.length;
   let check = chars.test(name);
 
-  return (length >= min && length <= max && check);
+  return ((length >= min) && (length <= max) && (check));
 }

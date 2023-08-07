@@ -8,7 +8,7 @@
     <tr>
       <td>Membership</td>
       <td>Username: <%=users[0].username%><br>Password: </td>
-      <td><a href="">Change username</a><br><a href="">Change password</a></td>
+      <td><div id="updateBtn">Change username</div><br><div id="updatePswd">Change password</div></td>
     </tr>
     <tr>
       <td colspan="3"><hr></td>
@@ -16,7 +16,7 @@
     <tr>
       <td>Profiles</td>
       <td><img src="assets/default_user.png" width = "150" height = "100" alt="second"> <%=users[0].first + " " + users[0].last%></td>
-      
+
     </tr>
     <tr>
       <td colspan="3"><hr></td>
@@ -31,6 +31,7 @@
     </tr>
   </table>
   </div>
+  <script src="/js/tingle.min.js"></script>
+  <script src="/js/update.js"></script>
 
-  <script src="/js/script.js"></script>
 <%- include('partials/footer.ejs') %>

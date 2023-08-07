@@ -2,6 +2,10 @@
   font-family: 'Josefin Sans', sans-serif;
 }
 
+body::-webkit-scrollbar {
+  display: none; /* Hide the scrollbar */
+}
+
 body {
   margin: 0;
 }
