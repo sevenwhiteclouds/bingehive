@@ -24,6 +24,7 @@
     <tr>
       <td>Delete Account:</td>
       <td><a href="/settings/delete?username=<%users[0].username%>">Yes, I would like to delete my account</td>
+      <td><form action="/logout"><button>Log out</button></form></td>
        <% if (typeof message != "undefined"){ %>
           <h3 class="message"><%=message%></h3>
         <% } %>
