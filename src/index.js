@@ -261,6 +261,7 @@ app.get('/category', async (req, res) => {
 });
 
 app.post('/create-account', upload.single("pfp"), async (req, res) =>{
+  // TODO: change mysql db to be case sensitive on the username/password?
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
