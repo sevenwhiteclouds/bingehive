@@ -252,11 +252,15 @@ app.get('/category', async (req, res) => {
   res.send(movies);
 });
 
-app.post('/create-account', upload.none(), async (req, res) =>{
+app.post('/create-account', upload.single("pfp"), async (req, res) =>{
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
   const last = req.body.last;
+  // TODO: put server checks in place so user can only upload pictures, also file size?
+  // also, maybe there's a better way intead of constantly sending the same image everytime create button 
+  // is clicked on client side.
+  const pfp = req.file;
 
   // TODO: make sure that we do have a check if one or more field is empty everything is rejected
   const minLength = 8;
