@@ -61,10 +61,6 @@ app.get('/login', async (req, res) => {
   res.render('index.ejs', { 'css': 'login' });
 })
 
-app.get("/home", (req, res) => {
-  res.redirect("/");
-});
-
 app.get('/logout', isAuthenticated, (req, res) => {
   req.session.destroy();
   res.redirect("/");
@@ -204,7 +200,6 @@ app.get('/television', async (req, res) => {
 });
 
 app.post('/create-account', upload.single("pfp"), async (req, res) =>{
-  // TODO: change mysql db to be case sensitive on the username/password?
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
@@ -312,6 +307,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
+function isAuthenticated(req, res, next) {
+  if (!req.session.authenticated) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+}
+
+function getRandomNumFromLength(size) {
+  return Math.floor(Math.random() * size);
+}
+
+
 async function executeSQL(query, params) {
   return new Promise((resolve, reject) => {
     dbAccess.query(query, params, (err, rows, fields) => {
@@ -319,10 +327,6 @@ async function executeSQL(query, params) {
       resolve(rows);
     });
   });
-}
-
-function getRandomNumFromLength(size) {
-  return Math.floor(Math.random() * size);
 }
 
 async function fetchMovieData() {
@@ -359,13 +363,6 @@ async function fetchMovieData() {
   }
 }
 
-function isAuthenticated(req, res, next) {
-  if (!req.session.authenticated) {
-    res.redirect("/");
-  } else {
-    next();
-  }
-}
 
 function isUsernameValid(username, min, max) {
   const chars = /^[a-zA-Z0-9]+$/;

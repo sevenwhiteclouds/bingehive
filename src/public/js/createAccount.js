@@ -67,6 +67,7 @@ createButton.addEventListener("click", async () => {
     formData.append("pfp", blob);
   }
 
+  // TODO: still need to improve this
   let response = await fetch("/create-account", {redirect: "manual", method: "POST", body: formData});
   if (response.type == "opaqueredirect") {
     window.location.replace("/movies");
