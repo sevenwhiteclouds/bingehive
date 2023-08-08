@@ -30,7 +30,7 @@ modal.addFooterBtn('Close', 'tingle-btn tingle-btn--danger', function() {
 
 updateBtn.addEventListener("click", () => {
 // set content
-  modal.setContent('<h1>Update</h1>');
+  modal.setContent('<input type="password" id="old>Update</h1>');
   modal.open();
 });
 

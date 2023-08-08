@@ -55,6 +55,20 @@ app.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
+// TODO: need to add middlware so only logged in users can request through this api
+app.get("/api/image/", async (req, res) => {
+  let fileKey;
+
+  if (req.session.authenticated) {
+    let sql = `SELECT pic FROM user WHERE user_id = '${req.session.userId}'`;
+    fileKey = (await executeSQL(sql))[0].pic;
+  } else {
+    fileKey = "default";
+  }
+
+  s3Download(fileKey).pipe(res);
+});
+
 // TODO: this needs middleware to check if user is already logged in
 app.get('/login', async (req, res) => {
   res.render('index.ejs', { 'css': 'login' });
@@ -251,8 +265,8 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
       res.send("Username taken");
     }
     else {
-      let sql = "INSERT INTO user (username, password, first, last) VALUES (?, ?, ? , ?);"
-      let params = [username, hash, cleanFirst, cleanLast];
+      let sql = "INSERT INTO user (username, password, first, last, pic) VALUES (?, ?, ?, ?, ?);"
+      let params = [username, hash, cleanFirst, cleanLast, "default"];
       let rows = await executeSQL(sql, params);
 
       let uploadStatus;
@@ -360,7 +374,6 @@ async function fetchMovieData() {
     console.error("APIerror:" + err);
   }
 }
-
 
 function isUsernameValid(username, min, max) {
   const chars = /^[a-zA-Z0-9]+$/;

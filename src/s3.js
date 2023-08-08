@@ -27,9 +27,9 @@ async function s3Upload(file) {
   return uploadStatus;
 }
 
-function s3Download(file) {
+function s3Download(fileKey) {
   const downloadParms = {
-    Key: file,
+    Key: fileKey,
     Bucket: s3Configs.name
   }
 
