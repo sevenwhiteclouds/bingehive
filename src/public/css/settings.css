@@ -13,7 +13,7 @@ body{
 }
 
 a{
-  color:orange;
+  color:#FDCC00;
   text-decoration: none;
   text-align: left;
 }
@@ -41,16 +41,22 @@ td {
 }
 
 button{
-  padding: 20px;
-  color: orange;
-  background-color: #c5c5c5;
+  padding: 30px;
+  font-size: 30px;
+  color: #FDCC00;
+  background-color: black;
+  border-radius: 50%;
+}
+
+#logout{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #updateBtn, #updatePswd{
-  color:orange;
+  color: #FDCC00;
 }
-
-
 
 
 #nav-container {
@@ -59,4 +65,9 @@ button{
   left: 0;
   width: 100%;
   z-index: 1;
+}
+
+.updateModal{
+  text-align: center;
+  font-size: 30px;
 }

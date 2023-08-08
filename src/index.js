@@ -10,7 +10,6 @@ const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 
 // s3 bucket
 const { s3Upload, s3Download } = require('./s3.js');
-const fs = require("fs");
 
 // Trailer API calls
 const { fetchTrailers } = require('./fetchTrailers');
@@ -90,10 +89,25 @@ app.get('/fetchMovieData', async (req, res) => {
 });
 
 app.get('/settings/delete', async function(req, res) {
-  let sql = `DELETE FROM user WHERE username = "${req.session.userId}"`;
+  // TODO: ask user if they are sure they want to delete, prevent accidental click
+  let sql = `DELETE FROM user WHERE user_id = "${req.session.userId}"`;
   let rows = await executeSQL(sql);
   res.redirect('/');
 })
+app.get('/settings/password', isAuthenticated, async function(req, res) {
+  let sql = `SELECT *
+             FROM user
+             WHERE user_id = '${req.session.userId}'`;
+  let rows = (await executeSQL(sql))[0];
+
+  res.render('userSettings.ejs', {
+    'css': 'settings',
+    'genres': genres,
+    'users': rows,
+    'genreIDs': genreIDs,
+    'types': types
+  });
+});
 
 app.get('/settings', isAuthenticated, async function(req, res) {
   let sql = `SELECT * FROM user WHERE user_id = '${req.session.userId}'`;
@@ -153,7 +167,8 @@ app.get('/movies', async (req, res) => {
     'genres': genres,
     'genreIDs': genreIDs,
     'types': types,
-    'movieData': movieData.data
+    'movieData': movieData.data,
+    'index' : movieData.index
   });
 })
 
@@ -296,11 +311,47 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
   });
 });
 
+app.post("/settings", upload.none(), async (req, res) => {
+  let userId = req.session.userId;
+  let newUsername = req.body.newUsername;
+  const minLength = 8;
+  const maxLength = 32;
+  if(!isUsernameValid(newUsername, minLength, maxLength)){
+    res.send("Username must be 8-32 letters, numbers, and/or symbols only.");
+    return;
+  }
+  let sql = `UPDATE user SET username = ? WHERE user_id = ?`;
+  let params = [newUsername, userId];
+  await executeSQL(sql, params);
+  res.send("Updated.");
+});
+
+app.post("/settings/password", upload.none(), async (req, res) => {
+  let userId = req.session.userId;
+  let newPassword = req.body.newPassword;
+  let oldPassword = req.body.oldPassword;
+  const minLength = 8;
+  const maxLength = 32;
+  // TODO: check if user is entering correct password before updating it
+  if (!isPasswordValid(newPassword, minLength, maxLength)) {
+    res.send("Password must be 8-32 letters, numbers, and/or symbols only.");
+    return;
+  }
+  bcrypt.hash(newPassword, saltRounds, async function (err, hash) {
+    let sql = `UPDATE user
+               SET password = ?
+               WHERE user_id = ?`;
+    let params = [hash, userId];
+    await executeSQL(sql, params);
+    res.send("Updated.");
+  });
+});
+
 app.post("/login", async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let hashedPwd = "";
-  let sql = "SELECT * FROM user WHERE username = ?";
+  let sql = `SELECT * FROM user WHERE username = ?`;
   let rows = await executeSQL(sql, [username]);
 
   console.log("username: " + username);
@@ -377,7 +428,8 @@ async function fetchMovieData() {
       title: data.results[index].original_title,
       trendingMovies: trendingMovies,
       trendingMoviesImg: trendingMoviesImg,
-      data: data
+      data: data,
+      index: index
     };
   } catch (err) {
     console.error("APIerror:" + err);

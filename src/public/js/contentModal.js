@@ -31,7 +31,9 @@ async function modalOpen(data) {
 
   player = new YT.Player("video-container", {
     videoId: apiData,
-    playerVars: { "autoplay": 1, "controls": 1, "rel": 0, "showinfo": 0}
+    width: "100%",
+    height: 600,
+    playerVars: { "autoplay": 1, "rel": 0, "showinfo": 0, "modestbranding": 1}
   });
 
   modal.open();

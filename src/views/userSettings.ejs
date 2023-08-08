@@ -1,4 +1,4 @@
-"<%- include('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 <%- include('partials/nav.ejs') %>
   <div class="table-container">
   <table>
@@ -7,7 +7,7 @@
     </tr>
     <tr>
       <td>Membership</td>
-      <td>Username: <%=users.username%><br>Password: </td>
+      <td>Username: <%=users.username%><br><br>Password: ********</td>
       <td><div id="updateBtn">Change username</div><br><div id="updatePswd">Change password</div></td>
     </tr>
     <tr>
@@ -15,7 +15,8 @@
     </tr>
     <tr>
       <td>Profiles</td>
-      <td><img id="settings-pfp" src="/api/image/" width = "150" height = "150" alt="second"> <%=users.first + " " + users.last%></td>
+      <td><img id="settings-pfp" src="/api/image/" width = "150" height = "150" alt="second"></td>
+      <td><%=users.first + " " + users.last%></td>
 
     </tr>
     <tr>
@@ -23,21 +24,18 @@
     </tr>
     <tr>
       <td>Delete Account:</td>
-      <td><a href="/settings/delete?username=<%users.username%>">Yes, I would like to delete my account</td>
-      <td><form action="/logout"><button>Log out</button></form></td>
+      <td><a href="/settings/delete?username=<%users.username%>">Yes, I would like to delete my account</a></td>
+      <td><div id="logout"><form action="/logout"><button>Log out</button></form></div></td>
        <% if (typeof message != "undefined"){ %>
           <h3 class="message"><%=message%></h3>
         <% } %>
     </tr>
   </table>
   </div>
-
+<div id="serverMessage"></div>
 <div id="modal">
-  <form id="updateInfo">
-    Old Username = <input type="text" id="oldUsername" name="oldUsername"><br>
-    New Username = <input type="text" id="newUsername" name="newUsername"><br>
-    <button id="submitUpdate">Update</button>
-  </form>
+</div>
+<div id="modal2">
 </div>
   <script src="/js/tingle.min.js"></script>
   <script src="/js/update.js"></script>

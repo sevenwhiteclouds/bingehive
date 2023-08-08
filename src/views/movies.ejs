@@ -2,7 +2,7 @@
 <%- include('partials/nav.ejs') %>
 
 <div class="container" id="home-container">
-    <div class="banner">
+    <div class="banner" onclick='modalOpen(<%= JSON.stringify(movieData.results[index]) %>)'>
         <img src="<%= bannerImg %>" alt="banner image" class="banner-img">
         <div class="banner-info">
             <h2 class="banner-title"><%= movieTitle %></h2>
@@ -131,6 +131,6 @@
 <script src="/js/carousel.js"></script>
 <script src="/js/tingle.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="/js/movieModal.js"></script>
+<script src="/js/contentModal.js"></script>
 
 <%- include('partials/footer.ejs') %>
