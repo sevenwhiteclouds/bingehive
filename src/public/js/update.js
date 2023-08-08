@@ -17,7 +17,7 @@ const modal = new tingle.modal({
 });
 
 // add a button
-modal.addFooterBtn('Update', 'tingle-btn tingle-btn--primary', function() {
+/*modal.addFooterBtn('Update', 'tingle-btn tingle-btn--primary', function() {
   // here goes some logic
   modal.close();
 });
@@ -26,13 +26,25 @@ modal.addFooterBtn('Update', 'tingle-btn tingle-btn--primary', function() {
 modal.addFooterBtn('Close', 'tingle-btn tingle-btn--danger', function() {
   // here goes some logic
   modal.close();
-});
+});*/
 
 updateBtn.addEventListener("click", () => {
 // set content
-  modal.setContent('<input type="password" id="old>Update</h1>');
+  modal.setContent(document.querySelector('#modal').innerHTML);
   modal.open();
 });
+
+const updateButton = document. querySelector("#submitUpdate");
+const oldUsername = document.querySelector("#oldUsername");
+const newUsername = document.querySelector("#newUsername");
+
+updateButton.addEventListener("click", async () => {
+  let formData = new FormData();
+  formData.append("oldUsername", oldUsername.value);
+  formData.append("newUsername", newUsername.value);
+  fetch("/updateUser", {method: "POST", body: formData}).then
+
+})
 
 updatePswd.addEventListener("click", () => {
 // set content

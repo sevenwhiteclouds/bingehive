@@ -1,4 +1,4 @@
-<%- include('partials/header.ejs') %>
+"<%- include('partials/header.ejs') %>
 <%- include('partials/nav.ejs') %>
   <div class="table-container">
   <table>
@@ -31,6 +31,14 @@
     </tr>
   </table>
   </div>
+
+<div id="modal">
+  <form id="updateInfo">
+    Old Username = <input type="text" id="oldUsername" name="oldUsername"><br>
+    New Username = <input type="text" id="newUsername" name="newUsername"><br>
+    <button id="submitUpdate">Update</button>
+  </form>
+</div>
   <script src="/js/tingle.min.js"></script>
   <script src="/js/update.js"></script>
 

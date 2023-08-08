@@ -12,6 +12,9 @@ const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 const { s3Upload, s3Download } = require('./s3.js');
 const fs = require("fs");
 
+// Trailer API calls
+const { fetchTrailers } = require('./fetchTrailers');
+
 // sessions
 const session = require('express-session');
 const secret = require("./configs_DO_NOT_GITHUB.json").sessionsSecret;
@@ -30,7 +33,7 @@ app.use(session({
   secret: secret,
   resave: true,
   saveUninitialized: true,
-  // cookie: {secure: true}
+  cookie: {maxAge: 630720000000}
 }));
 
 // Change genre arrays to object when time permits. Inefficient to use arrays
@@ -55,7 +58,6 @@ app.get('/', async (req, res) => {
   res.redirect('/login');
 })
 
-// TODO: need to add middlware so only logged in users can request through this api
 app.get("/api/image/", async (req, res) => {
   let fileKey;
 
@@ -154,6 +156,13 @@ app.get('/movies', async (req, res) => {
     'movieData': movieData.data
   });
 })
+
+app.get('/api/fetch-trailer', async (req, res) => {
+  const movieID = req.query.id;
+  const data = await fetchTrailers(movieID);
+  console.log(data)
+  res.json(data);
+});
 
 app.get('/television', async (req, res) => {
   try {
