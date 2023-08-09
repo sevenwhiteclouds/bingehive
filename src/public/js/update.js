@@ -93,7 +93,8 @@ const serverMessage = document.getElementById('serverMessage');
 
 updateBtn.addEventListener("click", () => {
  //modal.setContent(document.querySelector('#modal').innerHTML);
-  modal.setContent(`<div class="updateModal"><br><br>Old Username = <input type="text" id="oldUsername" name="oldUsername"><br><br>
+  const username = document.getElementById('userNm').value.innerHTML;
+  modal.setContent(`<div class="updateModal"><br><br>Old Username = ${username} <br><br>
     New Username = <input type="text" id="newUsername" name="newUsername"><br></div>`);
   modal.open();
 });

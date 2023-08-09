@@ -18,6 +18,7 @@ function changeActive(element, contentChange) {
   switch(element.id) {
 
     case 'dropdown-genre':
+
       element.style.color = 'white';
       typeElement.style.color = '#FDCC00';
       listsElement.style.color = '#FDCC00';
@@ -130,19 +131,35 @@ window.onclick = function(event) {
 
 function serverFunction(input) {
   const actionText = input.innerText; // Input text ex: "Action"
-  console.log(actionText);
 
-  if (importedData.genres.includes(actionText)){
+  const currentPath = window.location.pathname;
+  const parts = currentPath.split('/').filter(part => part !== ''); // Split path by slashes and remove empty parts
+  const path = parts[parts.length - 1];
+
+
+  if (path === 'Movies'&& importedData.genres.includes(actionText)){
 
     let genreID = importedData.genres.indexOf(actionText);
     genreID = importedData.genreIDs[genreID];
 
-    fetch(`/category?genre=${genreID}`)
+    fetchData(genreID, path);
+
+  } else if (importedData.tvGenres.includes(actionText)) {
+
+    let genreID = importedData.tvGenres.indexOf(actionText);
+    genreID = importedData.tvGenreIDs[genreID];
+
+    fetchData(genreID, path);
+  }
+
+}
+
+function fetchData(genreID, path) {
+
+  fetch(`/category?genre=${genreID}&path=${path}`)
     .then((response) => response.json())
     .then((data) => changePageGenre(data))
     .catch((err) => console.error(`SERVER CALL FAILED: ${err}`));
-  }
-
 }
 
 function changePageGenre(data) {

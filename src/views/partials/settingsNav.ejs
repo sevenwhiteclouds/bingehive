@@ -5,7 +5,9 @@
             <img id="logo-horizontal" src="/assets/BingeHiveHorizontalLogo.png" alt="logo">
         </a>
 
-        <input id="search-bar" type="text" placeholder="Search...">
+        <form id="search-bar" action="/search" method="get">
+            <input type="text" id="search-bar-query" name="query" placeholder="Search...">
+        </form>
 
         <a id="nav-settings" href="/settings">
             <img id="user-pfp" src="/api/image/" alt="user profile picture">

@@ -41,7 +41,7 @@ const genres = ['Action', 'Horror', 'Thriller', 'Western', 'Science Fiction', 'D
 
 // API uses different generes for TV
 const tvGenres = ["Action & Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Mystery", "Reality", "Sci-Fi & Fantasy", "Soap", "Western"];
-const tvGenreIDs = [10759, 16, 35, 80, 99, 18, 10751, 9648, 10764, 10765, 10766, 37];
+const tvGenreIDs = ['10759', '16', '35', '80', '99', '18', '10751', '9648', '10764', '10765', '10766', '37'];
 
 // Same indexes as `genres` array - just in num format
 const genreIDs = ['28', '27', '53', '37', '878', '18', '10749', '35', '14', '16', '99', '9648', '10751']
@@ -53,9 +53,21 @@ app.listen(3000, () => {
 })
 
 // Sends user straight to login. Most aesthetic for URL.
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
   res.redirect('/login');
 })
+
+app.get("/search", async (req, res) => {
+  const query = encodeURIComponent(req.query.query);
+
+  if (query.length === 0) {
+    res.send("You didn't search anything :(");
+  }
+
+  const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
+
+  res.send(results);
+});
 
 app.get("/api/image/", async (req, res) => {
   let fileKey;
@@ -122,20 +134,38 @@ app.get('/settings', isAuthenticated, async function(req, res) {
 
 app.get('/category', async (req, res) => {
   const genreParam = req.query.genre;
+  const path = req.query.path;
   let pageParam = 1;
-  const movies = [];
+  const content = [];
+  let genre;
 
-  // Exchanges genreID which the API uses to readable genre
-  let genre = genreIDs.indexOf(genreParam);
-  genre = genres[genre];
+  switch(path.toLowerCase()) {
 
-  movies.push(genre);
+    case 'movies':
+      genre = genreIDs.indexOf(genreParam);
+      genre = genres[genre];
+      content.push(genre);
 
-  for (pageParam; pageParam <= 3; pageParam++) {
-    movies.push(await fetchMoviesFromGenres(genreParam, pageParam));
+      for (pageParam; pageParam <= 3; pageParam++) {
+        content.push(await fetchMoviesFromGenres(genreParam, pageParam));
+      }
+      break;
+
+    case 'television':
+      genre = tvGenreIDs.indexOf(genreParam);
+      genre = tvGenres[genre];
+      content.push(genre);
+
+      for (pageParam; pageParam <= 3; pageParam++) {
+        content.push(await fetchShowsFromGenres(genreParam, pageParam));
+      }
+      break;
+
+    default:
+      console.error('SWITCH ERROR: /category');
   }
 
-  res.send(movies);
+  res.send(content);
 });
 
 app.get('/movies', async (req, res) => {
@@ -169,7 +199,10 @@ app.get('/movies', async (req, res) => {
     'types': types,
     'movieData': movieData.data,
     'index' : movieData.index,
-    'authenticated': req.session.authenticated
+    'authenticated': req.session.authenticated,
+    'currentPage': "movies",
+    'tvGenreIDs': tvGenreIDs,
+    'tvGenres': tvGenres
   });
 })
 
@@ -225,11 +258,14 @@ app.get('/television', async (req, res) => {
       'title': data.results[index].original_name,
       'trendingShows': trendingShows,
       'trendingShowsImg': trendingShowsImg,
-      'genres': genres,
-      'genreIDs': genreIDs,
+      'genres': tvGenres,
+      'genreIDs': tvGenreIDs,
+      'tvGenreIDs': tvGenreIDs,
+      'tvGenres': tvGenres,
       'genreShows': genreShows,
       'genreList': genreList,
-      'types': types
+      'types': types,
+      'currentPage': "television"
     });
 
   } catch (err) {
@@ -435,10 +471,6 @@ async function fetchMovieData() {
   } catch (err) {
     console.error("APIerror:" + err);
   }
-}
-
-function getListAndEntries() {
-
 }
 
 function isUsernameValid(username, min, max) {
