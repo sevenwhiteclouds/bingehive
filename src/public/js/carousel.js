@@ -6,13 +6,13 @@ let carouselItemsOnScreen;
 handleCarouselResponsive();
 
 function handleCarouselResponsive() {
-  
+
   slides.forEach((slide) => {
     slide.style.paddingRight = window.innerWidth - staticWidth + 'px';
   });
 
   let widthOfItem = window.getComputedStyle(slides[0]).paddingRight.replace('px', '');
-  
+
   carouselItemsOnScreen = (parseInt(widthOfItem) + staticWidth)/bannerWidth;
 }
 
@@ -25,8 +25,10 @@ const genre1Carousel = createCarousel('genre1-carousel');
 const genre2Carousel = createCarousel('genre2-carousel');
 const genre3Carousel = createCarousel('genre3-carousel');
 
-document.querySelector('#b1').addEventListener('click', listCarousel.prevSlide);
-document.querySelector('#b2').addEventListener('click', listCarousel.nextSlide);
+if (document.querySelector('#b1') !== null){
+  document.querySelector('#b1').addEventListener('click', listCarousel.prevSlide);
+  document.querySelector('#b2').addEventListener('click', listCarousel.nextSlide);
+}
 
 document.querySelector('#b3').addEventListener('click', trendingCarousel.prevSlide);
 document.querySelector('#b4').addEventListener('click', trendingCarousel.nextSlide);
@@ -50,12 +52,14 @@ function createCarousel(elementID) {
   const carousel = document.querySelector(`#${elementID}`);
   const carouselItems = document.querySelectorAll(`#${elementID} .carousel-item`);
 
-  if (listLength < carouselItemsOnScreen) {
-      document.querySelector("#b2").style.display = 'none';
-  }
+  if (document.querySelector('#b1') !== null){ {
+      if (listLength < carouselItemsOnScreen) {
+          document.querySelector("#b2").style.display = 'none';
+      }
+  }}
 
   function prevSlide() {
-    
+
       currentIndex = (currentIndex - carouselItemsOnScreen);
       updateCarousel(this);
 
@@ -69,18 +73,18 @@ function createCarousel(elementID) {
       if (currentIndex === 0) {
         this.style.display = 'none';
       }
-    
+
   }
 
   function nextSlide() {
-    
+
     currentIndex = (currentIndex + carouselItemsOnScreen);
     updateCarousel(this);
-  
+
     if (currentIndex === carouselItems.length/carouselItemsOnScreen) {
       this.style.display = 'none';
     }
-  
+
     // Scuffed way of changing prevSlide button display
     if (currentIndex !== 0) {
       let id = this.id;
@@ -89,7 +93,7 @@ function createCarousel(elementID) {
       id = 'b' + id;
       document.querySelector(`#${id}`).style.display = 'block';
     }
-    
+
   }
 
   function updateCarousel(button) {
@@ -97,16 +101,16 @@ function createCarousel(elementID) {
     if (currentIndex + carouselItemsOnScreen > carouselItems.length) {
       carousel.style.transform = `translateX(-${(carouselItems.length - carouselItemsOnScreen) * bannerWidth}px)`;
       button.style.display = 'none';
-      
+
     }  else if (currentIndex < 0) {
       carousel.style.transform = `translateX(0px)`;
       button.style.display = 'none';
       currentIndex = 0;
-      
+
     } else {
       carousel.style.transform = `translateX(-${currentIndex * bannerWidth}px)`;
     }
-    
+
   }
 
   return { prevSlide, nextSlide };

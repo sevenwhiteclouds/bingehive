@@ -168,7 +168,8 @@ app.get('/movies', async (req, res) => {
     'genreIDs': genreIDs,
     'types': types,
     'movieData': movieData.data,
-    'index' : movieData.index
+    'index' : movieData.index,
+    'authenticated': req.session.authenticated
   });
 })
 
@@ -305,7 +306,7 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
         await executeSQL(sql, params);
       }
 
-      // TODO: should be a redirect to the homepage with session. also, need to send session as a cookie to user.
+      // TODO: should be a redirect to the homepage with session.
       res.send("User added!");
     }
   });
@@ -434,6 +435,10 @@ async function fetchMovieData() {
   } catch (err) {
     console.error("APIerror:" + err);
   }
+}
+
+function getListAndEntries() {
+
 }
 
 function isUsernameValid(username, min, max) {

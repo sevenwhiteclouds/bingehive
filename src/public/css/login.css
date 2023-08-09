@@ -1,6 +1,7 @@
 body, html{
-  background-color: #141414;
   height: 100%;
+  background-size: cover !important;
+  background-image: url(/assets/backgroundImage1.png);
 }
 
 .content-wrapper {
@@ -9,6 +10,8 @@ body, html{
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .login-form {
@@ -18,41 +21,77 @@ body, html{
   align-items: center;
   justify-content: center;
   text-align: center;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 3px;
+  padding: 40px;
+  max-width: 400px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+}
+
+#login{
+  color: #737373;
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 16px;
 }
 
 .username {
   margin: .6em;
+  margin-bottom: 1px;
   font-size: 2em;
+  width: 50%;
+  border-radius: 4px;
 }
 
 .password {
   margin: .6em;
   font-size: 2em;
+  width: 50%;
+  margin-bottom: 1px;
+  border-radius: 4px;
 }
 
 .first, .last {
   margin: .6em;
   font-size: 2em;
+  width: 50%;
+  margin-bottom: 1px;
+  border-radius: 4px;
+}
+
+::placeholder {
+  font-size: 16px;
 }
 
 .login-btn {
   width: 200px;
   height: 45px;
-  font-size: 2em;
-  margin-top: .8em;
+  font-size: 16px;
+  margin: .8em;
+  color: white;
+  background-color: #db0001;
+  border: none;
+  border-radius: 4px;
 }
 
+
+
 .login-title {
-  font-size: 4em;
+  font-size: 40px;
   margin: 0;
+  text-align: left;
+  color: white;
 }
 
 #create-account-pic {
   margin: .6em;
 }
 
-.create {
-  font-size: 1.6em;
+#now {
+  font-size: 16px;
+  color: white;
 }
 
 a {
@@ -60,9 +99,9 @@ a {
   color: #FDCC00;
 }
 
-.error {
+.error, .message {
 color:red;
-font-size: 2em;
+font-size: 16px;
 }
 
 .message {

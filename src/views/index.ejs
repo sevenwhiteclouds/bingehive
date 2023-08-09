@@ -4,21 +4,24 @@
 
 <div class="content-wrapper">
     <div class="login-form">
-        <h1 class="login-title">Login to BingeHive W.I.P.</h1>
+        <h1 class="login-title">Sign In</h1>
 
         <form method="POST">
-            <input type="text" class="username" name="username" placeholder="Username"> <br>
+            <input type="text" class="username" name="username" placeholder="Username">
             <input type="password" class="password" name="password" placeholder="Password"> <br>
-          <button class="login-btn">Login</button>
+          <button class="login-btn">Sign in</button>
         </form>
 
       <% if (typeof loginError != "undefined" && loginError) { %>
       <h3 class="error">Invalid login!</h3>
       <% } %>
 
-        <a href="/create-account">
-            <p class="create">Create Account</p>
+        <div id ="login">
+            New to BingeHive?
+        <a href="/create-account" id="now">
+             Sign up now.
         </a>
+        </div>
     </div>
 
 </div>
