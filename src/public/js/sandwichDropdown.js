@@ -131,6 +131,7 @@ window.onclick = function(event) {
 
 function serverFunction(input) {
   const actionText = input.innerText; // Input text ex: "Action"
+  console.log(actionText);
 
   const currentPath = window.location.pathname;
   const parts = currentPath.split('/').filter(part => part !== ''); // Split path by slashes and remove empty parts
@@ -166,7 +167,7 @@ function changePageGenre(data) {
   const homeContainer = document.querySelector('#home-container');
 
   homeContainer.innerHTML =
-    `<h3 class='category-title'> ${data[0]} </h3>`
+    `<h3 class='category-title'> ${data[0]} (Page W.I.P) </h3>`
 
   const movieRows = createMovieRows(data);
 
@@ -182,15 +183,13 @@ function changePageGenre(data) {
 function createMovieRows(data) {
 
   let htmlString = '';
+  console.log(data);
 
   for (let i = 1; i < data.length; i++) {
     for(let j = 0; j < data[i].length; j++) {
       if (data[i][j].backdrop_path != null){
         htmlString += `
           <div class='movie-cell'> <img class='movie' src='https://image.tmdb.org/t/p/w780${data[i][j].backdrop_path}' alt='movie-img'> </div>
-              <div class='hover' onclick='modalOpen( JSON.stringify(genreMovies[0][i]) )' id='modal#<%= i %>'>
-                    <h4 class="hover-movie-title"> genreMovies[0][i].title </h4>
-              </div>
         `
       }
     }

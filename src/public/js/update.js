@@ -30,15 +30,15 @@ const modal2 = new tingle.modal({
     console.log('modal closed');
   },
 });
+const serverMessage = document.querySelector("#server-Message2");
 
 // add a button
 modal.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-right', function() {
-  const oldUsername = document.getElementById('oldUsername').value;
+  //const oldUsername = document.getElementById('oldUsername').value;
   const newUsername = document.getElementById('newUsername').value;
-  console.log(oldUsername + " " + newUsername);
 
   let formData = new FormData();
-  formData.append("oldUsername", oldUsername);
+  //formData.append("oldUsername", oldUsername);
   formData.append("newUsername", newUsername);
 
   fetch('/settings', {method: "POST", body: formData})
@@ -53,7 +53,6 @@ modal.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-ri
 
   modal.close();
 });
-const serverMessage = document.querySelector("#message");
 
 modal2.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-right', function() {
   const oldPassword = document.getElementById('oldPassword').value;
@@ -95,7 +94,7 @@ updateBtn.addEventListener("click", () => {
  //modal.setContent(document.querySelector('#modal').innerHTML);
   const username = document.getElementById('userNm').innerHTML;
   modal.setContent(`<div class="updateModal"><br><br>Old Username = ${username} <br><br>
-    New Username = <input type="text" id="newUsername" name="newUsername"><br></div><h3 class="message"></h3>`);
+    New Username = <input type="text" id="newUsername" name="newUsername"><br></div>`);
   modal.open();
 });
 
@@ -103,6 +102,6 @@ updateBtn.addEventListener("click", () => {
 updatePswd.addEventListener("click", () => {
 // set content
   modal2.setContent(`<div class="updateModal"><br><br>Old Password = <input type="password" id="oldPassword" name="oldPassword"><br><br>
-    New Password = <input type="password" id="newPassword" name="newPassword"><br></div><h3 class="message"></h3>`);
+    New Password = <input type="password" id="newPassword" name="newPassword"><br></div>`);
   modal2.open();
 });

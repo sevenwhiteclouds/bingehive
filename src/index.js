@@ -58,31 +58,14 @@ app.get('/', (req, res) => {
 })
 
 app.get("/search", async (req, res) => {
-  const query = encodeURIComponent(req.query.query);
-
-  if (query.length === 0) {
-    res.send("You didn't search anything :(");
+  if (Object.keys(req.query).length === 0) {
+    res.redirect("/movies");
+    return;
   }
 
-  const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
+  const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${req.query.query}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
 
-  res.render("search.ejs", {'css': 'main',
-                            bannerImg: movieData.bannerUrl,
-                            movieDescription: movieData.description,
-                            movieTitle: movieData.title,
-                            trending: movieData.trendingMovies,
-                            trendingMoviesImg: movieData.trendingMoviesImg,
-                            genreList: genreList,
-                            genreMovies: genreMovies,
-                            genres: genres,
-                            genreIDs: genreIDs,
-                            types: types,
-                            movieData: movieData.data,
-                            index: movieData.index,
-                            authenticated: req.session.authenticated,
-                            currentPage: "movies",
-                            tvGenreIDs: tvGenreIDs,
-                            tvGenres: tvGenres});
+  res.render("search.ejs", {css: "main", data: results});
 });
 
 app.get("/api/image/", async (req, res) => {
@@ -374,6 +357,13 @@ app.post("/settings", upload.none(), async (req, res) => {
   let newUsername = req.body.newUsername;
   const minLength = 8;
   const maxLength = 32;
+  let sql1 = "SELECT COUNT(*) as count FROM user where username = ?";
+  let row = await executeSQL(sql1, [newUsername]);
+  let count = row[0].count;
+  if (count > 0) {
+    res.send("Username taken");
+    return;
+  }
   if(!isUsernameValid(newUsername, minLength, maxLength)){
     res.send("Username must be 8-32 letters, numbers, and/or symbols only.");
     return;
@@ -399,7 +389,6 @@ app.post("/settings/password", upload.none(), async (req, res) => {
   }
   const minLength = 8;
   const maxLength = 32;
-  // TODO: check if user is entering correct password before updating it
   if (!isPasswordValid(newPassword, minLength, maxLength)) {
     res.send("Password must be 8-32 letters, numbers, and/or symbols only.");
     return;
