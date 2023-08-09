@@ -68,9 +68,9 @@ createButton.addEventListener("click", async () => {
   }
 
   // TODO: still need to improve this redirect
-  let response = await fetch("/create-account", {redirect: "manual", method: "POST", body: formData});
-  if (response.type === "opaqueredirect") {
-    window.location.replace("/movies");
+  let response = await fetch("/create-account", {redirect: "follow", method: "POST", body: formData});
+  if (response.redirected) {
+    window.location.href = response.url;
   } else {
     serverMessage.innerHTML = "";
     serverMessage.innerHTML = await response.text();

@@ -15,7 +15,8 @@
     </tr>
     <tr>
       <td>Profiles</td>
-      <td><img id="settings-pfp" src="/api/image/" width = "150" height = "150" alt="second"></td>
+      <td><label for="pfp-input"><img id="defaultPfp" src="/api/image/" width = "150" height = "150" alt="second"></label></td>
+      <input type="file" id="pfp-input" name="pfp-upload" accept="image/png, image/jpeg, image/jpg">
       <td><%=users.first + " " + users.last%><br><br><div id="logout"><form action="/logout"><button>Log out</button></form></div></td>
 
     </tr>
@@ -37,6 +38,7 @@
 <div id="modal2">
 </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="/js/tingle.min.js"></script>
   <script src="/js/update.js"></script>
 

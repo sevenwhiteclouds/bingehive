@@ -45,7 +45,10 @@ async function changeModalContentToVideo(data, contentType) {
 
   console.log(data);
 
-  modal.setContent(`
+  const lists = await (await fetch('/api/getList')).json();
+  console.log(lists);
+  let htmlString =
+    `
     <div class="modal-content-wrapper">
     
       <div class="modal-top" id="video-container"></div>
@@ -60,31 +63,30 @@ async function changeModalContentToVideo(data, contentType) {
         <img src="" alt="< Back" id="backBtn">
         
         <div class="modal-lists">
+    `;
+
+
+  for (const list of lists) {
+    htmlString +=
+      `
           <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>
+            <h2 class="inline"> ${list.list_name} </h2>
             <img src="" alt="addBtn">
           </div>
-          
-          <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>
-            <img src="" alt="addBtn">
-          </div>
-          
-          <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>
-            <img src="" alt="addBtn">
-          </div>
-          
-          <button class="new-list-btn"">New List</button>
+      `;
+  }
+
+  htmlString +=
+    `
+              <button class="new-list-btn"">New List</button>
         </div>
-        
-        
-          
+       
       </div>
       
     </div>
-     
-  `)
+    `;
+
+  modal.setContent(htmlString);
 
   document.querySelector('#addBtn').addEventListener("click", () => {
     player.pauseVideo();
@@ -112,14 +114,4 @@ async function changeModalContentToVideo(data, contentType) {
     height: 600,
     playerVars: { "autoplay": 1, "rel": 0, "showinfo": 0, "modestbranding": 1}
   });
-}
-
-// This is where we generate user lists for changeModalToList
-function generateList() {
-  const listArr = [];
-  // <div className="modal-list-item">
-  //   <h2 className="inline"> Autogenerate these items using generateList() </h2>
-  //   <img src="" alt="addBtn">
-  // </div>
-  return listArr;
 }

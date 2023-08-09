@@ -1,11 +1,12 @@
 -- this entire file is a work in progress still not complete!
+-- make sure pay close attention to the lists and the user id that are being inserted into
 -- creating 3 lists
 INSERT INTO list (user_id, list_name)
 VALUES (1, '2001');
-# INSERT INTO list (user_id, list_name)
-# VALUES (1, 'Terror');
-# INSERT INTO list (user_id, list_name)
-# VALUES (1, 'Movie Night');
+INSERT INTO list (user_id, list_name)
+VALUES (1, 'Terror');
+INSERT INTO list (user_id, list_name)
+VALUES (1, 'Movie Night');
 
 -- 10 entries for the list called '2001'
 INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
@@ -29,46 +30,26 @@ VALUES (1, '14277', '/5IoSxJRrpQUgIXLTev6MET3R5fd.jpg', 'Loose Change', 'movie',
 INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
 VALUES (1, '23116', '/piVPQiBE7IoSzdD8R0eeFQzZftc.jpg', 'Loose Change 9/11: An American Coup', 'movie', 'With the departure of the Bush Administration and the arrival of an “era of transparency,” opportunities are arising for the disclosure of new information that may shed more light on the events that took place before and after 9/11/2001. Loaded with powerful, new footage and in-depth interviews this documentary presents a wide array of evidence both known and unknown…until now.');
 
-# # 10 entries for the list called 'Terror'
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (2, );
-#
-# -- 10 entries for the list called 'Movie Night'
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
-# INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
-# VALUES (3, );
+-- 3 entries for the list called 'Terror'
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (8, '536554', '/dlrWhn0G3AtxYUx2D9P2bmzcsvF.jpg', 'M3GAN', 'movie', 'A brilliant toy company roboticist uses artificial intelligence to develop M3GAN, a life-like doll programmed to emotionally bond with her newly orphaned niece. But when the dolls programming works too well, she becomes overprotective of her new friend with terrifying results.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (8, '917007', '/lQzSMhkAl90iXPirjnLbRHkxApC.jpg', 'Bed Rest', 'movie', 'A pregnant woman on bed rest begins to wonder if her house is haunted or if it''s all in her head.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (8, '49018', '/bylGn5OC2h3BWfGLYFtIcxlYxLy.jpg', 'Insidious', 'movie', 'A family discovers that dark spirits have invaded their home after their son inexplicably falls into an endless sleep. When they reach out to a professional for help, they learn things are a lot more personal than they thought.');
+
+-- 7 entries for the list called 'Movie Night'
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '1040148', '/f7UI3dYpr7ZUHGo0iIr1Qvy1VPe.jpg', 'Ruby Gillman, Teenage Kraken', 'movie', 'Ruby Gillman, a sweet and awkward high school student, discovers she''s a direct descendant of the warrior kraken queens. The kraken are sworn to protect the oceans of the world against the vain, power-hungry mermaids. Destined to inherit the throne from her commanding grandmother, Ruby must use her newfound powers to protect those she loves most.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '438148', '/uMSxXLfH7v30gRNBqsQaSP3yqX5.jpg', 'Minions: The Rise of Gru', 'movie', 'A fanboy of a supervillain supergroup known as the Vicious 6, Gru hatches a plan to become evil enough to join them, with the backup of his followers, the Minions.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '456', '/hpU2cHC9tk90hswCFEpf5AtbqoL.jpg', 'The Simpsons', 'tv', 'Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '387', '/aasp5EmwclAQbwfGABWLTNLhjwB.jpg', 'SpongeBob SquarePants', 'tv', 'Deep down in the Pacific Ocean in the subterranean city of Bikini Bottom lives a square yellow sponge named SpongeBob SquarePants. SpongeBob lives in a pineapple with his pet snail, Gary, loves his job as a fry cook at the Krusty Krab, and has a knack for getting into all kinds of trouble without really trying. When hes not getting on the nerves of his cranky next door neighbor Squidward, SpongeBob can usually be found smack in the middle of all sorts of strange situations with his best buddy, the simple yet lovable starfish, Patrick, or his thrill-seeking surfer-girl squirrel pal, Sandy Cheeks.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '46928', '/5tLsZoolMwqkCMUwEXYfh61Pajn.jpg', 'Sofia the First', 'tv', 'Set in the storybook world of Enchancia, this is the story of Princess Sofia, an adventurous little girl who is learning how to adjust to royal life after her mom marries the king and she becomes a princess overnight.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '35094', '/oxHJw4QigyrVAQAZqEQaTUCsemk.jpg', 'Wild Kratts', 'tv', 'The adventures of Chris and Martin Kratt as they encounter incredible wild animals, combining science education with fun and adventure as the duo travels to animal habitats around the globe.');
+INSERT INTO list_entry(list_id, id, backdrop_path, original_title, media_type, overview)
+VALUES (9, '315162', '/jr8tSoJGj33XLgFBy6lmZhpGQNu.jpg', 'Puss in Boots: The Last Wish', 'movie', 'Puss in Boots discovers that his passion for adventure has taken its toll: He has burned through eight of his nine lives, leaving him with only one life left. Puss sets out on an epic journey to find the mythical Last Wish and restore his nine lives.');

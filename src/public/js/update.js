@@ -1,3 +1,57 @@
+// profile picture stuff
+const pfpInput = document.querySelector("#pfp-input");
+const defaultPfp = document.querySelector("#defaultPfp");
+let cropper;
+
+const modalPfp = new tingle.modal({
+  footer: true,
+  stickyFooter: false,
+  closeMethods: [],
+  closeLabel: "Close",
+
+  beforeOpen: function() {
+    let croppingImage = document.querySelector("#crop-this");
+
+    cropper  = new Cropper(croppingImage, {
+      viewMode: 3,
+      aspectRatio: 1 / 1,
+      dragMode: "move",
+      cropBoxResizable: false,
+      checkOrientation: false,
+      wheelZoomRatio: 0.3,
+      minCropBoxWidth: 150,
+      minCropBoxHeight: 150
+    });
+  }
+});
+
+modalPfp.addFooterBtn("Cancel", "tingle-btn tingle-btn--secondary", () => {
+  modalPfp.close();
+});
+
+modalPfp.addFooterBtn("Save", "tingle-btn tingle-btn--primary", async () => {
+  let formData = new FormData();
+
+  formData.append("pfp", await new Promise(resolve => {
+    cropper.getCroppedCanvas().toBlob(blob => resolve(blob));
+  }));
+
+  // TODO: add a try block or something to check that upload was success
+  let response = await fetch("/api/update-pfp", {redirect: "follow", method: "POST", body: formData});
+
+  if (response.redirected) {
+    window.location.replace(response.url);
+  }
+});
+
+pfpInput.addEventListener("change", () => {
+  if (pfpInput.files[0] !== undefined) {
+    modalPfp.setContent(`<div id="imgdiv"><img src="${URL.createObjectURL(pfpInput.files[0])}" id="crop-this"></div>`);
+    modalPfp.open();
+  }
+});
+
+// sk's things start from here on
 const updateBtn = document.getElementById('updateBtn');
 const updatePswd = document.getElementById('updatePswd');
 //const updateButton = document.getElementById('submitUpdate');
@@ -88,8 +142,6 @@ modal2.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-r
   modal.open();
 });*/
 
-
-
 updateBtn.addEventListener("click", () => {
  //modal.setContent(document.querySelector('#modal').innerHTML);
   const username = document.getElementById('userNm').innerHTML;
@@ -97,7 +149,6 @@ updateBtn.addEventListener("click", () => {
     New Username = <input type="text" id="newUsername" name="newUsername"><br></div>`);
   modal.open();
 });
-
 
 updatePswd.addEventListener("click", () => {
 // set content

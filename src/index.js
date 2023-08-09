@@ -68,6 +68,8 @@ app.get("/search", async (req, res) => {
   res.render("search.ejs", {css: "main", data: results});
 });
 
+
+
 app.get("/api/image/", async (req, res) => {
   let fileKey;
 
@@ -81,7 +83,7 @@ app.get("/api/image/", async (req, res) => {
   s3Download(fileKey).pipe(res);
 });
 
-// TODO: this needs middleware to check if user is already logged in
+// TODO: this needs middleware to check if user is already logged in for all routes
 app.get('/login', async (req, res) => {
   res.render('index.ejs', { 'css': 'login' });
 })
@@ -215,6 +217,12 @@ app.get('/api/fetch-trailer', async (req, res) => {
   res.json(data);
 });
 
+app.get('/api/getList', async (req, res) => {
+  const userID = req.session.userId;
+  const lists = await getList(userID);
+  res.send(lists);
+});
+
 app.get('/television', async (req, res) => {
   try {
 
@@ -282,17 +290,26 @@ app.get('/television', async (req, res) => {
   }
 });
 
-app.post('/create-account', upload.single("pfp"), async (req, res) =>{
+app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, res) => {
+  const image = req.file;
+  let uploadStatus = await s3Upload(image.buffer);
+
+  if (uploadStatus !== undefined) {
+    let sql = `UPDATE user SET pic = ? WHERE user_id = ${req.session.userId}`;
+    let params = [uploadStatus.key];
+    await executeSQL(sql, params);
+  }
+
+  res.redirect("/settings");
+});
+
+app.post('/create-account', upload.single("pfp"), async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
   const last = req.body.last;
-  // TODO: put server checks in place so user can only upload pictures, also file size?
-  // also, maybe there's a better way intead of constantly sending the same image everytime create button
-  // is clicked on client side.
   const image = req.file;
 
-  // TODO: make sure that we do have a check if one or more field is empty everything is rejected
   const minLength = 8;
   const maxLength = 32;
   const minNameLength = 1;
@@ -353,8 +370,9 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
 
       await createList(rows.insertId, "Favorites");
 
-      // TODO: should be a redirect to the homepage with session.
-      res.send("User added!");
+      req.session.authenticated = true;
+      req.session.userId = rows.insertId;
+      res.redirect("/movies");
     }
   });
 });

@@ -21,7 +21,6 @@ function changeActive(element, contentChange) {
 
       element.style.color = 'white';
       typeElement.style.color = '#FDCC00';
-      listsElement.style.color = '#FDCC00';
 
       changeContent(element, contentChange);
 
@@ -30,18 +29,8 @@ function changeActive(element, contentChange) {
     case 'dropdown-type':
       element.style.color = 'white';
       genreElement.style.color = '#FDCC00';
-      listsElement.style.color = '#FDCC00';
 
       changeContentType(element, contentChange);
-
-      break;
-
-    case 'dropdown-lists':
-      element.style.color = 'white';
-      typeElement.style.color = '#FDCC00';
-      genreElement.style.color = '#FDCC00';
-
-      changeContent(element, contentChange);
 
       break;
 
