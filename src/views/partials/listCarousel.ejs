@@ -1,10 +1,12 @@
 <div class="slide">
     <h4 class="row-title">My Lists</h4>
-    <div class="carousel" id="list-carousel">
+    <div class="carousel">
         <% for (const list of userLists) { %>
-            <div class="carousel-item">
+        <a href="/myList?id=<%= list.list_id %>&title=<%= list.list_name %>">
+            <div class="carousel-item" id="<%= list.list_id %>">
                 <div class="list"><h2 class="list-name"><%= list.list_name %></h2></div>
             </div>
+        </a>
         <% } %>
     </div>
 

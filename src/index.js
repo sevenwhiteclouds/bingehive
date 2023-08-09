@@ -65,8 +65,7 @@ app.get("/search", async (req, res) => {
 
   const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(req.query.query)}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
 
-  //res.render("search.ejs", {css: "main", data: results});
-  res.send(results);
+  res.render("search.ejs", {css: "main", data: results});
 });
 
 app.get("/api/image/", async (req, res) => {
@@ -366,6 +365,15 @@ async function createList(userId, listName) {
 
   let rows = await executeSQL(sql, params);
 }
+app.get("/mylist", isAuthenticated, async (req, res) => {
+  const listId = req.query.id;
+  const title = req.query.title;
+  console.log(listId);
+
+  let data = await (await getAllListEntries(listId));
+
+  res.render("mylist.ejs", {css: "main", title: title, data: data});
+});
 
 async function getList(userId) {
   let sql = `SELECT list.list_id, list.list_name FROM list WHERE list.user_id = ?`
@@ -375,7 +383,7 @@ async function getList(userId) {
 }
 
 async function getAllListEntries(listId) {
-  let sql = `SELECT * FROM list_entry WHERE list_entry.listId = ?`
+  let sql = `SELECT * FROM list_entry WHERE list_entry.list_id = ?`
 
   let params = [listId];
   return await executeSQL(sql, params);

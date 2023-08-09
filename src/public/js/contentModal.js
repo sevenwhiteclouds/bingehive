@@ -47,17 +47,63 @@ async function changeModalContentToVideo(data, contentType) {
 
   modal.setContent(`
     <div class="modal-content-wrapper">
-        <div class="modal-top" id="video-container"></div>
-        <div class="modal-bottom">
-            <h2 class="modal-title inline">${title}</h2>
-            <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
-            <p class="modal-description">${data.overview}</p>
+    
+      <div class="modal-top" id="video-container"></div>
+      <div class="modal-bottom">
+        <h2 class="modal-title inline">${title}</h2>
+        <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
+        <p class="modal-description">${data.overview}</p>
+      </div>
+        
+      <div class="list-wrapper" style="display: none">
+      
+        <img src="" alt="< Back" id="backBtn">
+        
+        <div class="modal-lists">
+          <div class="modal-list-item">
+            <h2 class="inline"> Autogenerate these items using generateList() </h2>
+            <img src="" alt="addBtn">
+          </div>
+          
+          <div class="modal-list-item">
+            <h2 class="inline"> Autogenerate these items using generateList() </h2>
+            <img src="" alt="addBtn">
+          </div>
+          
+          <div class="modal-list-item">
+            <h2 class="inline"> Autogenerate these items using generateList() </h2>
+            <img src="" alt="addBtn">
+          </div>
+          
+          <button class="new-list-btn"">New List</button>
         </div>
-     </div>
+        
+        
+          
+      </div>
+      
+    </div>
+     
   `)
 
   document.querySelector('#addBtn').addEventListener("click", () => {
-    changeModalToList(data);
+    player.pauseVideo();
+
+    const videoContainer = document.querySelector("#video-container");
+    const modalBottom = document.querySelector(".modal-bottom");
+    const listWrapper = document.querySelector(".list-wrapper");
+    const backBtn = document.querySelector("#backBtn");
+
+    videoContainer.style.display = "none";
+    modalBottom.style.display = "none";
+    listWrapper.style.display = "block";
+
+    backBtn.addEventListener("click", () => {
+      videoContainer.style.display = "block";
+      modalBottom.style.display = "block";
+      listWrapper.style.display = "none";
+      player.playVideo();
+    })
   });
 
   player = new YT.Player("video-container", {
@@ -68,42 +114,12 @@ async function changeModalContentToVideo(data, contentType) {
   });
 }
 
-
-// This is where we will change the modal content to List format.
-function changeModalToList(prevModalData) {
-
-  // Maybe move button to footer.
-  modal.setContent(
-    `
-      <div class="modal-list-wrapper">
-        <img src="" alt="< Back" id="backBtn">
-        <!--<div class="modal-lists">
-          <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>    
-            <img src="" alt="addBtn">     
-          </div>
-          <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>       
-            <img src="" alt="addBtn">   
-          </div>
-          <div class="modal-list-item">
-            <h2 class="inline"> Autogenerate these items using generateList() </h2>     
-            <img src="" alt="addBtn">     
-          </div>
-        </div>
-        <button class="new-list-btn"">New List</button> -->
-        <p>Would you like to add to your list?</p><br>
-        <button class="yes">Yes</button> <button class="no">No</button>
-      </div>
-    `
-  )
-
-  document.querySelector('#backBtn').addEventListener("click", async () => {
-    await changeModalContentToVideo(prevModalData);
-  });
-}
-
 // This is where we generate user lists for changeModalToList
 function generateList() {
-
+  const listArr = [];
+  // <div className="modal-list-item">
+  //   <h2 className="inline"> Autogenerate these items using generateList() </h2>
+  //   <img src="" alt="addBtn">
+  // </div>
+  return listArr;
 }

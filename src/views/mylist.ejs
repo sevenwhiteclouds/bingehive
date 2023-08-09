@@ -1,0 +1,29 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/settingsNav.ejs') %>
+
+<div class="container" id="home-container">
+    <h3 class="category-title"><%= title %></h3>
+    <div class="subcategory-movies-wrapper">
+        <div class="movie-row">
+            <% for (let i = 0; i < data.length; i++) { %>
+                <% if (data[i].backdrop_path != null) { %>
+                    <div class="movie-cell"> <img class="movie" src="https://image.tmdb.org/t/p/w780/<%= data[i].backdrop_path %>" alt="movie-img">
+                        <div class='hover' onclick='modalOpen(<%= JSON.stringify(data[i]) %>)' id='modal#<%= i %>'>
+                            <% if(data[i].media_type === 'tv') { %>
+                                <h4 class="hover-movie-title"><%= data[i].original_name %></h4>
+                            <% } else { %>
+                                    <h4 class="hover-movie-title"><%= data[i].original_title %></h4>
+                            <% } %>
+                        </div>
+                    </div>
+
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer.ejs') %>
+<script src="/js/tingle.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="/js/contentModal.js"></script>
