@@ -53,6 +53,7 @@ modal.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-ri
 
   modal.close();
 });
+const serverMessage = document.querySelector("#message");
 
 modal2.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-right', function() {
   const oldPassword = document.getElementById('oldPassword').value;
@@ -89,13 +90,12 @@ modal2.addFooterBtn('Update', 'tingle-btn tingle-btn--warning tingle-btn--pull-r
 });*/
 
 
-const serverMessage = document.getElementById('serverMessage');
 
 updateBtn.addEventListener("click", () => {
  //modal.setContent(document.querySelector('#modal').innerHTML);
-  const username = document.getElementById('userNm').value.innerHTML;
+  const username = document.getElementById('userNm').innerHTML;
   modal.setContent(`<div class="updateModal"><br><br>Old Username = ${username} <br><br>
-    New Username = <input type="text" id="newUsername" name="newUsername"><br></div>`);
+    New Username = <input type="text" id="newUsername" name="newUsername"><br></div><h3 class="message"></h3>`);
   modal.open();
 });
 
@@ -103,6 +103,6 @@ updateBtn.addEventListener("click", () => {
 updatePswd.addEventListener("click", () => {
 // set content
   modal2.setContent(`<div class="updateModal"><br><br>Old Password = <input type="password" id="oldPassword" name="oldPassword"><br><br>
-    New Password = <input type="password" id="newPassword" name="newPassword"><br></div>`);
+    New Password = <input type="password" id="newPassword" name="newPassword"><br></div><h3 class="message"></h3>`);
   modal2.open();
 });

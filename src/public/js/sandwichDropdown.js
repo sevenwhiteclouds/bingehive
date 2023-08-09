@@ -99,11 +99,11 @@ function changeContentType(element, contentChange) {
 
         changeString +=
           `<div class="sub-choices">
-              <h4 class="sub-choice"> <a href='/${contentChange[i]}'>${contentChange[i]} </a></h4>`
+              <h4 class="sub-choice"> <a href='/${contentChange[i].toLowerCase()}'>${contentChange[i]} </a></h4>`
 
       } else {
         changeString +=
-          `<h4 class="sub-choice"> <a href='/${contentChange[i]}' >${contentChange[i]}</a></h4>`
+          `<h4 class="sub-choice"> <a href='/${contentChange[i].toLowerCase()}' >${contentChange[i]}</a></h4>`
       }
     }
 
@@ -137,7 +137,7 @@ function serverFunction(input) {
   const path = parts[parts.length - 1];
 
 
-  if (path === 'Movies'&& importedData.genres.includes(actionText)){
+  if (path === 'movies'&& importedData.genres.includes(actionText)){
 
     let genreID = importedData.genres.indexOf(actionText);
     genreID = importedData.genreIDs[genreID];
@@ -165,8 +165,6 @@ function fetchData(genreID, path) {
 function changePageGenre(data) {
   const homeContainer = document.querySelector('#home-container');
 
-  console.log(data)
-
   homeContainer.innerHTML =
     `<h3 class='category-title'> ${data[0]} </h3>`
 
@@ -188,7 +186,12 @@ function createMovieRows(data) {
   for (let i = 1; i < data.length; i++) {
     for(let j = 0; j < data[i].length; j++) {
       if (data[i][j].backdrop_path != null){
-        htmlString += `<div class='movie-cell'> <img class='movie' src='https://image.tmdb.org/t/p/w780${data[i][j].backdrop_path}' alt='movie-img'> </div>`
+        htmlString += `
+          <div class='movie-cell'> <img class='movie' src='https://image.tmdb.org/t/p/w780${data[i][j].backdrop_path}' alt='movie-img'> </div>
+              <div class='hover' onclick='modalOpen( JSON.stringify(genreMovies[0][i]) )' id='modal#<%= i %>'>
+                    <h4 class="hover-movie-title"> genreMovies[0][i].title </h4>
+              </div>
+        `
       }
     }
   }

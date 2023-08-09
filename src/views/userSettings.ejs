@@ -16,7 +16,7 @@
     <tr>
       <td>Profiles</td>
       <td><img id="settings-pfp" src="/api/image/" width = "150" height = "150" alt="second"></td>
-      <td><%=users.first + " " + users.last%></td>
+      <td><%=users.first + " " + users.last%><br><br><div id="logout"><form action="/logout"><button>Log out</button></form></div></td>
 
     </tr>
     <tr>
@@ -24,11 +24,11 @@
     </tr>
     <tr>
       <td>Delete Account:</td>
+      <td></td>
       <td><a href="/settings/delete?username=<%users.username%>">Yes, I would like to delete my account</a></td>
-      <td><div id="logout"><form action="/logout"><button>Log out</button></form></div></td>
-       <% if (typeof message != "undefined"){ %>
-          <h3 class="message"><%=message%></h3>
-        <% } %>
+
+
+
     </tr>
   </table>
   </div>

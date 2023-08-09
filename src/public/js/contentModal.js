@@ -14,27 +14,54 @@ var modal = new tingle.modal({
 
 // This is how we open the Model and initialize the first page.
 async function modalOpen(data) {
-  await changeModalContentToVideo(data);
+  const currentPath = window.location.pathname;
+  const parts = currentPath.split('/').filter(part => part !== ''); // Split path by slashes and remove empty parts
+  let contentType = parts[parts.length - 1];
+
+  console.log(data)
+
+  if (contentType === 'movies') {
+    contentType = 'movie';
+  } else if (contentType === 'television') {
+    contentType = 'tv';
+  }
+
+  await changeModalContentToVideo(data, contentType);
   modal.open();
 }
 
 // This is where we will change the modal content to Video format.
-async function changeModalContentToVideo(data) {
+async function changeModalContentToVideo(data, contentType) {
 
-  const response = await fetch(`/api/fetch-trailer?id=${encodeURIComponent(data.id)}`)
+  const response = await fetch(`/api/fetch-trailer?id=${encodeURIComponent(data.id)}&contentType=${contentType}`)
   const apiData = await response.json();
 
-  //console.log(data);
-  modal.setContent(`
-    <div class="modal-content-wrapper">
-        <div class="modal-top" id="video-container"></div>
-        <div class="modal-bottom">
-            <h2 class="modal-title inline">${data.original_title}</h2>
-            <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
-            <p class="modal-description">${data.overview}</p>
-        </div>
-     </div>
-  `)
+  console.log(data);
+
+  if (contentType === 'movie'){
+      modal.setContent(`
+        <div class="modal-content-wrapper">
+            <div class="modal-top" id="video-container"></div>
+            <div class="modal-bottom">
+                <h2 class="modal-title inline">${data.original_title}</h2>
+                <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
+                <p class="modal-description">${data.overview}</p>
+            </div>
+         </div>
+      `)
+  } else if (contentType === 'tv') {
+    modal.setContent(`
+        <div class="modal-content-wrapper">
+            <div class="modal-top" id="video-container"></div>
+            <div class="modal-bottom">
+                <h2 class="modal-title inline">${data.original_name}</h2>
+                <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
+                <p class="modal-description">${data.overview}</p>
+            </div>
+         </div>
+      `)
+  }
+
 
   document.querySelector('#addBtn').addEventListener("click", () => {
     changeModalToList(data);

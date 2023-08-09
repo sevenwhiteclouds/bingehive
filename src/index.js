@@ -66,7 +66,23 @@ app.get("/search", async (req, res) => {
 
   const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
 
-  res.send(results);
+  res.render("search.ejs", {'css': 'main',
+                            bannerImg: movieData.bannerUrl,
+                            movieDescription: movieData.description,
+                            movieTitle: movieData.title,
+                            trending: movieData.trendingMovies,
+                            trendingMoviesImg: movieData.trendingMoviesImg,
+                            genreList: genreList,
+                            genreMovies: genreMovies,
+                            genres: genres,
+                            genreIDs: genreIDs,
+                            types: types,
+                            movieData: movieData.data,
+                            index: movieData.index,
+                            authenticated: req.session.authenticated,
+                            currentPage: "movies",
+                            tvGenreIDs: tvGenreIDs,
+                            tvGenres: tvGenres});
 });
 
 app.get("/api/image/", async (req, res) => {
@@ -208,7 +224,8 @@ app.get('/movies', async (req, res) => {
 
 app.get('/api/fetch-trailer', async (req, res) => {
   const movieID = req.query.id;
-  const data = await fetchTrailers(movieID);
+  const contentType = req.query.contentType;
+  const data = await fetchTrailers(movieID, contentType);
   console.log(data)
   res.json(data);
 });
@@ -246,10 +263,12 @@ app.get('/television', async (req, res) => {
 
     data.results.forEach((show) => {
       if (show.backdrop_path != null) {
-        trendingShows.push(show.original_name);
+        trendingShows.push(show);
         trendingShowsImg.push(show.backdrop_path);
       }
     });
+
+    console.log(trendingShows)
 
     res.render('television.ejs', {
       'css': 'main',
@@ -265,6 +284,8 @@ app.get('/television', async (req, res) => {
       'genreShows': genreShows,
       'genreList': genreList,
       'types': types,
+      'index': index,
+      'tvData' : data,
       'currentPage': "television"
     });
 
@@ -367,6 +388,15 @@ app.post("/settings/password", upload.none(), async (req, res) => {
   let userId = req.session.userId;
   let newPassword = req.body.newPassword;
   let oldPassword = req.body.oldPassword;
+  let sql = `SELECT * FROM user where user_id = ?`;
+  let rows = await executeSQL(sql, [userId]);
+  console.log(rows);
+  let hashedPwd = rows[0].password;
+  let passwordMatch = await bcrypt.compare(oldPassword, hashedPwd);
+  if (!passwordMatch){
+    res.send("Old password is incorrect");
+    return;
+  }
   const minLength = 8;
   const maxLength = 32;
   // TODO: check if user is entering correct password before updating it
