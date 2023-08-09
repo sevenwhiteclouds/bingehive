@@ -42,12 +42,14 @@ body {
   position: relative;
   overflow: hidden;
   width: 300px;
+  user-select: none;
 }
 
 .cell {
   height: 200px;
   width: 400px;
   padding: 0 2px;
+  object-fit: cover;
 }
 
 .hover:hover{
@@ -73,11 +75,11 @@ body {
   opacity: 0;
   flex-direction: column;
   position: absolute;
-  height: 99%;
+  height: 100%;
   width: 100%;
   text-align: center;
-  top: -1px;
-  left: 2px;
+  top: 0px;
+  left: 0;
   background-color: rgba(0, 0, 0, 50%);
   cursor: pointer;
   user-select: none;
@@ -164,6 +166,7 @@ body {
   height: 200px;
   width: 400px;
   margin: 10px;
+  position: relative;
 }
 
 .movie {
@@ -221,7 +224,7 @@ body {
   margin: 8px 0;
 }
 
-.new-list-btn {
+.new-list-btn, .yes, .no {
   min-width: 13%;
   width: fit-content;
   font-size: 1.8em;
@@ -235,6 +238,15 @@ body {
 
 #backBtn {
   cursor: pointer;
+}
+
+.list {
+  height: 100%;
+}
+
+.list-name {
+  text-align: center;
+  margin: auto 0;
 }
 
 @media screen and (max-width: 1680px) {

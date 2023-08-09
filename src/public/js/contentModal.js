@@ -24,6 +24,8 @@ async function modalOpen(data) {
     contentType = 'movie';
   } else if (contentType === 'television') {
     contentType = 'tv';
+  } else {
+    contentType = data.media_type;
   }
 
   await changeModalContentToVideo(data, contentType);
@@ -32,36 +34,27 @@ async function modalOpen(data) {
 
 // This is where we will change the modal content to Video format.
 async function changeModalContentToVideo(data, contentType) {
+  const apiData = await (await fetch(`/api/fetch-trailer?id=${encodeURIComponent(data.id)}&contentType=${contentType}`)).json()
 
-  const response = await fetch(`/api/fetch-trailer?id=${encodeURIComponent(data.id)}&contentType=${contentType}`)
-  const apiData = await response.json();
+  // TODO: make sure to test this works with both the api and the database
+  if ((contentType === "movie") || (data.list_id !== undefined)) {
+    title = data.original_title;
+  } else if (contentType === "tv") {
+    title = data.original_name;
+  }
 
   console.log(data);
 
-  if (contentType === 'movie'){
-      modal.setContent(`
-        <div class="modal-content-wrapper">
-            <div class="modal-top" id="video-container"></div>
-            <div class="modal-bottom">
-                <h2 class="modal-title inline">${data.original_title}</h2>
-                <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
-                <p class="modal-description">${data.overview}</p>
-            </div>
-         </div>
-      `)
-  } else if (contentType === 'tv') {
-    modal.setContent(`
-        <div class="modal-content-wrapper">
-            <div class="modal-top" id="video-container"></div>
-            <div class="modal-bottom">
-                <h2 class="modal-title inline">${data.original_name}</h2>
-                <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
-                <p class="modal-description">${data.overview}</p>
-            </div>
-         </div>
-      `)
-  }
-
+  modal.setContent(`
+    <div class="modal-content-wrapper">
+        <div class="modal-top" id="video-container"></div>
+        <div class="modal-bottom">
+            <h2 class="modal-title inline">${title}</h2>
+            <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
+            <p class="modal-description">${data.overview}</p>
+        </div>
+     </div>
+  `)
 
   document.querySelector('#addBtn').addEventListener("click", () => {
     changeModalToList(data);
@@ -84,7 +77,7 @@ function changeModalToList(prevModalData) {
     `
       <div class="modal-list-wrapper">
         <img src="" alt="< Back" id="backBtn">
-        <div class="modal-lists">
+        <!--<div class="modal-lists">
           <div class="modal-list-item">
             <h2 class="inline"> Autogenerate these items using generateList() </h2>    
             <img src="" alt="addBtn">     
@@ -98,7 +91,9 @@ function changeModalToList(prevModalData) {
             <img src="" alt="addBtn">     
           </div>
         </div>
-        <button class="new-list-btn"">New List</button>
+        <button class="new-list-btn"">New List</button> -->
+        <p>Would you like to add to your list?</p><br>
+        <button class="yes">Yes</button> <button class="no">No</button>
       </div>
     `
   )

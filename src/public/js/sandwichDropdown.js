@@ -167,7 +167,7 @@ function changePageGenre(data) {
   const homeContainer = document.querySelector('#home-container');
 
   homeContainer.innerHTML =
-    `<h3 class='category-title'> ${data[0]} (Page W.I.P) </h3>`
+    `<h3 class='category-title'> ${data[0]} </h3>`
 
   const movieRows = createMovieRows(data);
 
@@ -189,8 +189,19 @@ function createMovieRows(data) {
     for(let j = 0; j < data[i].length; j++) {
       if (data[i][j].backdrop_path != null){
         htmlString += `
-          <div class='movie-cell'> <img class='movie' src='https://image.tmdb.org/t/p/w780${data[i][j].backdrop_path}' alt='movie-img'> </div>
-        `
+          <div class='movie-cell'> <img class='movie' src='https://image.tmdb.org/t/p/w780${data[i][j].backdrop_path}' alt='movie-img'> 
+              <div class='hover' onclick='modalOpen(${JSON.stringify(data[i][j]).replace(/'/g, "")})' id='modal#<%= i %>'>`
+
+        if (data[i][j].original_title !== undefined) {
+          htmlString += `<h4 class="hover-movie-title">${data[i][j].original_title}</h4>`
+        } else {
+          htmlString += `<h4 class="hover-movie-title">${data[i][j].original_name}</h4>`
+        }
+
+        htmlString += `
+              </div>
+          </div>
+          `
       }
     }
   }

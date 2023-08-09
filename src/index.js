@@ -63,9 +63,10 @@ app.get("/search", async (req, res) => {
     return;
   }
 
-  const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${req.query.query}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
+  const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(req.query.query)}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
 
-  res.render("search.ejs", {css: "main", data: results});
+  //res.render("search.ejs", {css: "main", data: results});
+  res.send(results);
 });
 
 app.get("/api/image/", async (req, res) => {
@@ -183,6 +184,7 @@ app.get('/movies', async (req, res) => {
   }
 
   let movieData = await fetchMovieData();
+  let listData = await getList(req.session.userId);
 
   res.render('movies.ejs', {
     'css': 'main',
@@ -201,6 +203,7 @@ app.get('/movies', async (req, res) => {
     'authenticated': req.session.authenticated,
     'currentPage': "movies",
     'tvGenreIDs': tvGenreIDs,
+    'userLists': listData,
     'tvGenres': tvGenres
   });
 })
@@ -234,6 +237,7 @@ app.get('/television', async (req, res) => {
     const response = await fetch(url, apiOptions)
     const data = await response.json();
     let index = getRandomNumFromLength(data.results.length);
+    let listData = await getList(req.session.userId);
 
     // Keeps shows without a backdrop out of the rotation
     while (data.results[index].backdrop_path == null) {
@@ -266,9 +270,11 @@ app.get('/television', async (req, res) => {
       'tvGenres': tvGenres,
       'genreShows': genreShows,
       'genreList': genreList,
+      'authenticated': req.session.authenticated,
       'types': types,
       'index': index,
       'tvData' : data,
+      'userLists': listData,
       'currentPage': "television"
     });
 
@@ -346,11 +352,34 @@ app.post('/create-account', upload.single("pfp"), async (req, res) =>{
         await executeSQL(sql, params);
       }
 
+      await createList(rows.insertId, "Favorites");
+
       // TODO: should be a redirect to the homepage with session.
       res.send("User added!");
     }
   });
 });
+
+async function createList(userId, listName) {
+  let sql = "INSERT INTO list (user_id, list_name) VALUES (?, ?)"
+  let params = [userId, listName];
+
+  let rows = await executeSQL(sql, params);
+}
+
+async function getList(userId) {
+  let sql = `SELECT list.list_id, list.list_name FROM list WHERE list.user_id = ?`
+
+  let params = [userId];
+  return await executeSQL(sql, params);
+}
+
+async function getAllListEntries(listId) {
+  let sql = `SELECT * FROM list_entry WHERE list_entry.listId = ?`
+
+  let params = [listId];
+  return await executeSQL(sql, params);
+}
 
 app.post("/settings", upload.none(), async (req, res) => {
   let userId = req.session.userId;
@@ -451,7 +480,7 @@ function getRandomNumFromLength(size) {
 async function executeSQL(query, params) {
   return new Promise((resolve, reject) => {
     dbAccess.query(query, params, (err, rows, fields) => {
-      if (err) throw err;
+      if (err) console.log("SQL ERROR: " + err);
       resolve(rows);
     });
   });
