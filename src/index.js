@@ -223,6 +223,67 @@ app.get('/api/getList', async (req, res) => {
   res.send(lists);
 });
 
+app.post('/api/addToList', upload.none(), async (req, res) => {
+  const listId = req.body.listId;
+  const contentId = req.body.id;
+  const mediaType = req.body.mediaType;
+  const backdropPath = req.body.backdropPath;
+  const originalTitle = req.body.originalTitle;
+  const overview = req.body.overview;
+
+  await addToList(listId, contentId, backdropPath, originalTitle, overview, mediaType);
+
+  res.send("Congrats! the movie was added!");
+});
+
+app.post('/api/removeFromList', upload.none(), async (req, res) => {
+  const listId = req.body.listId;
+  const contentId = req.body.contentId;
+
+  console.log(listId);
+  console.log(contentId);
+
+  await removeFromList(listId, contentId);
+
+  res.send("Item removed from list");
+});
+
+app.get('/api/isInList', async (req, res) => {
+  const listId = req.query.listId;
+  const contentId = req.query.contentId;
+
+  res.send(await isInList(listId, contentId));
+});
+
+async function isInList(listId, contentId) {
+  const sql = `SELECT id
+               FROM list_entry
+               WHERE id = ${contentId} AND list_id = ${listId}`
+
+  const rows = await executeSQL(sql);
+
+  return rows.length !== 0;
+
+}
+
+async function addToList(listId, contentId, backdropPath, originalTitle, overview, mediaType) {
+
+  let sql = `INSERT INTO list_entry (list_id, id, backdropPath, original_title, media_type, overview)
+             VALUES (?, ?, ?, ?, ?, ?)`
+
+  let params = [listId, contentId, backdropPath, originalTitle, overview, mediaType];
+  console.log(params)
+
+  await executeSQL(sql, params);
+}
+
+async function removeFromList(listId, contentId) {
+
+  let sql = `DELETE FROM list_entry WHERE list_Id = ${listId} AND id = ${contentId}`
+
+  await executeSQL(sql);
+}
+
 app.get('/television', async (req, res) => {
   try {
 
@@ -576,6 +637,11 @@ async function fetchShowsFromGenres(genre, page) {
   const response = await fetch(url, apiOptions)
   const data = await response.json();
 
+  for (const content of data.results) {
+    content.media_type = "tv";
+    content.original_title = content.original_name;
+  }
+
   return data.results;
 }
 
@@ -583,6 +649,10 @@ async function fetchMoviesFromGenres(genre, page) {
   const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&region=US&sort_by=popularity.desc&watch_region=US&with_genres=${genre}&with_origin_country=US&with_original_language=en`;
   const response = await fetch(url, apiOptions)
   const data = await response.json();
+
+  for (const content of data.results) {
+    content.media_type = "movie";
+  }
 
   return data.results;
 }

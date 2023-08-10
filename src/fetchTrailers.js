@@ -1,7 +1,7 @@
 const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 
-async function fetchTrailers(movieId, contentType) {
-  const url = `https://api.themoviedb.org/3/${contentType}/${movieId}/videos?language=en-US`;
+async function fetchTrailers(contentId, contentType) {
+  const url = `https://api.themoviedb.org/3/${contentType}/${contentId}/videos?language=en-US`;
   const response = await fetch(url, apiOptions);
   const data = await response.json();
 
