@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="../src/public/assets/BingeHiveHorizontalLogo.png" alt="logo">
+  <img src="/src/public/assets/BingeHiveHorizontalLogo.png" alt="logo">
 
 BingeHive, a dynamic and user-friendly web app designed to be your go-to destination for all things movies and TV shows.  
 _A movie or TV show aficionado's heaven._
