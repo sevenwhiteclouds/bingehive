@@ -5,7 +5,6 @@ BingeHive, a dynamic and user-friendly web app designed to be your go-to destina
 _A movie or TV show aficionado's heaven._
 </div>
 
----
 
 ## Usage Guide
 
