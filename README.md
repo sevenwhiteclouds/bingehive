@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="/src/public/assets/BingeHiveHorizontalLogo.png" alt="logo">
+  <img src="./src/public/assets/BingeHiveHorizontalLogo.png" alt="logo">
 
 BingeHive, a dynamic and user-friendly web app designed to be your go-to destination for all things movies and TV shows.  
 _A movie or TV show aficionado's heaven._
@@ -12,7 +12,7 @@ BingeHive is currently live at [here](https://bingehive.com). To get started, si
 and explore around for different movies or tv shows that are available. If you already know what you are looking for, 
 there is also a search bar to quickly jump search for a title.
 
-![home ss](./movies_home_ss.png)
+![home ss](./docs/movies_home_ss.png)
 
 ## Technology Stack
 
