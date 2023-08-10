@@ -19,6 +19,7 @@ var modal = new tingle.modal({
 
 // This is how we open the Model and initialize the first page.
 async function modalOpen(data) {
+  console.log(data);
   await changeModalContentToVideo(data);
   modal.open();
 }

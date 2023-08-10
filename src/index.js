@@ -65,6 +65,13 @@ app.get("/search", async (req, res) => {
 
   const results = (await (await fetch(`https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(req.query.query)}&include_adult=false&language=en-US&page=1`, apiOptions)).json()).results;
 
+  results.forEach(res => {
+    if (res.original_name !== undefined) {
+      res.original_title = res.original_name;
+      delete res.original_name;
+    }
+  });
+
   res.render("search.ejs", {css: "main", data: results});
 });
 
