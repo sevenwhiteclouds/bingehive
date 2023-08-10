@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 350 350">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #231f20;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #231f20;
+        stroke-miterlimit: 10;
+        stroke-width: 7px;
+      }
+
+      .cls-2 {
+        fill: #f9cc01;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1" data-name="Layer 1">
+    <image width="700" height="700" transform="translate(-.42 -.42) scale(.5)" xlink:href="../../../../../../../../../../../../Users/cassandra/bingehive/src/public/assets/addBtn.png"/>
+  </g>
+  <g id="Layer_2" data-name="Layer 2">
+    <rect class="cls-2" x="8.77" y="8.77" width="332.47" height="332.47" rx="75.18" ry="75.18"/>
+    <line class="cls-1" x1="175" y1="247.78" x2="175" y2="102.22"/>
+    <line class="cls-1" x1="102.22" y1="175" x2="247.78" y2="175"/>
+  </g>
+</svg>

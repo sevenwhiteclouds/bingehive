@@ -37,7 +37,7 @@ async function changeModalContentToVideo(data) {
       <div class="modal-top" id="video-container"></div>
       <div class="modal-bottom">
         <h2 class="modal-title inline">${data.original_title}</h2>
-        <img class="addBtn" id="addBtn" src="/assets/addBtn.png" alt="addbtn">
+        <img class="addBtn" id="addBtn" src="/assets/addBtn.svg" alt="addbtn">
         <p class="modal-description">${data.overview}</p>
       </div>
         
