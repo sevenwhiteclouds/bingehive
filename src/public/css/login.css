@@ -115,3 +115,11 @@ a {
 color:red;
 font-size: 16px;
 }
+
+.crop-modal .tingle-modal-box__footer{
+  text-align: center;
+}
+
+#imgdiv {
+  margin: 0 auto;
+}

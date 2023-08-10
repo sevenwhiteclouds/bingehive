@@ -1,5 +1,7 @@
 let player;
 
+let change = false;
+
 // instanciate new modal
 var modal = new tingle.modal({
   footer: false,
@@ -9,6 +11,9 @@ var modal = new tingle.modal({
   cssClass: ['movie-modal'],
   onClose: function() {
     player.destroy();
+    if (change && window.location.pathname === '/myList') {
+      location.reload();
+    }
   }
 });
 
@@ -66,8 +71,9 @@ async function changeModalContentToVideo(data) {
 
   let inList;
   for (let i = 0; i < lists.length; i++) {
-    console.log("here");
+
     inList = await (await fetch(`/api/isInList?listId=${lists[i].list_id}&contentId=${data.id}`)).json();
+    console.log(inList);
 
     if (inList) {
       document.querySelector(`#add-to-list-btn${lists[i].list_id}`).checked = true;
@@ -78,6 +84,7 @@ async function changeModalContentToVideo(data) {
     checkbox.forEach((box) => {
 
       box.addEventListener("change", async () => {
+        change = true;
 
         const listId = box.id.replace("add-to-list-btn","");
         const contentId = data.id;

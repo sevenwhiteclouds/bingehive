@@ -109,13 +109,22 @@ app.get('/fetchMovieData', async (req, res) => {
 
 app.get('/settings/delete', isAuthenticated, async function(req, res) {
   // TODO: ask user if they are sure they want to delete, prevent accidental click
-  let sql1 = `SELECT list.list_id FROM list JOIN user ON user.user_id = list.user_id where user.user_id = "${req.session.userId}";`
+  let sql1 = `SELECT * from list join user on user.user_id = list.user_id where user.user_id = "${req.session.userId}"`;
   let list_id = await executeSQL(sql1);
-  let sql2 = `DELETE FROM list_entry WHERE list_id = "${list_id[0].list_id}"`;
 
-  let rows = await executeSQL(sql);
+  for (let i = 0; i < list_id.length; i++) {
+    let sql2 = `delete from list_entry where list_id = "${list_id[i].list_id}"`;
+    await executeSQL(sql2);
+  }
+  let sql3 = `delete from list where user_id = "${req.session.userId}"`;
+  await executeSQL(sql3);
+  let sql4 = `delete from user where user_id = "${req.session.userId}"`;
+  await executeSQL(sql4);
+
+  req.session.destroy();
   res.redirect('/');
 })
+
 app.get('/settings/password', isAuthenticated, async function(req, res) {
   let sql = `SELECT *
              FROM user
@@ -263,7 +272,7 @@ app.post('/api/removeFromList', upload.none(), isAuthenticated, async (req, res)
 });
 
 function isAuthenticatedInList(req, res, next) {
-  if (!req.query.authenticated)  {
+  if (!req.session.authenticated)  {
     res.send(false);
   } else {
     next();
