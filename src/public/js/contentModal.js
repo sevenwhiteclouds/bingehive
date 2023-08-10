@@ -110,6 +110,7 @@ async function changeModalContentToVideo(data) {
 
         if (box.checked) {
           console.log("TRIED ADDING")
+          console.log(data);
           box.checked = true;
           await fetch('/api/addToList', {method: "POST", body: addForm});
         } else {

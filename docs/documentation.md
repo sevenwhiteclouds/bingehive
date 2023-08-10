@@ -33,7 +33,7 @@ there is also a search bar to quickly jump search for a title.
   * Git - Used for tracking changes in the codebase
   * Repl - Used for tracking and deploying a testing environment
 * **Other Tools**
-  * MySQLWorkBench - Used to build the database schema
+  * MySQLWorkbench - Used to build the database schema
   * IntelliJ - Used to collaborate with others in real time
   * SSH - Used for server administration
 * **External APIs**
@@ -41,6 +41,8 @@ there is also a search bar to quickly jump search for a title.
   * [TMDB](https://developer.themoviedb.org/reference/intro/getting-started) - Used to fetch information on movies and tv shows (e.g., titles and descriptions)
 * **Additional Dependencies**
   * Multer - Used for profile picture file uploading from the user
+  * Tingle - Used for modals
+  * Cropper - Used for cropping user seleted images client side
 
 ## Explore the Code
 
