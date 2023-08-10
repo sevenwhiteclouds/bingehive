@@ -28,6 +28,7 @@ body, html{
   max-width: 400px;
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
+  user-select: none;
 }
 
 .create{
@@ -93,6 +94,7 @@ body, html{
   margin: 0;
   text-align: left;
   color: white;
+  user-select: text;
 }
 
 #create-account-pic {

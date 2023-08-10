@@ -2,7 +2,7 @@ let player;
 
 // instanciate new modal
 var modal = new tingle.modal({
-  footer: true,
+  footer: false,
   stickyFooter: false,
   closeMethods: ['overlay', 'escape'],
   closeLabel: "Close",
@@ -14,9 +14,6 @@ var modal = new tingle.modal({
 
 // This is how we open the Model and initialize the first page.
 async function modalOpen(data) {
-  console.log(data)
-
-
   await changeModalContentToVideo(data);
   modal.open();
 }
@@ -25,10 +22,8 @@ async function modalOpen(data) {
 async function changeModalContentToVideo(data) {
   const apiData = await (await fetch(`/api/fetch-trailer?id=${encodeURIComponent(data.id)}&contentType=${data.media_type}`)).json()
 
-  console.log(data);
-
   const lists = await (await fetch('/api/getList')).json();
-  console.log(lists);
+
   let htmlString =
     `
     <div class="modal-content-wrapper">
@@ -42,9 +37,10 @@ async function changeModalContentToVideo(data) {
         
       <div class="list-wrapper" style="display: none">
       
-        <img src="" alt="< Back" id="backBtn">
+        <img src="/assets/back.jpg" width= "50" height= "50" alt="< Back" id="backBtn"/>
         
         <div class="modal-lists">
+        <h2 class="modal-list-title">Lists:</h2>
     `;
 
   for (let i = 0; i < lists.length; i++) {
@@ -53,8 +49,7 @@ async function changeModalContentToVideo(data) {
       `
           <div class="modal-list-item">
             <h2 class="inline"> ${lists[i].list_name} </h2>
-            <input type ="checkbox" class="add-to-list-btn" id="add-to-list-btn#${lists[i].list_id}" name="add-to-list-btn" value="add">
-            <!--<img class="add-to-list-btn" id="add-to-list-btn" src="" alt="addBtn"> -->
+            <input type ="checkbox" class="add-to-list-btn" id="add-to-list-btn${lists[i].list_id}" name="add-to-list-btn" value="add">
           </div>
       `;
   }
@@ -62,11 +57,8 @@ async function changeModalContentToVideo(data) {
 
   htmlString +=
     `
-                <button class="new-list-btn"">New List</button>
           </div>
-         
         </div>
-        
       </div>
       `;
 
@@ -74,11 +66,11 @@ async function changeModalContentToVideo(data) {
 
   let inList;
   for (let i = 0; i < lists.length; i++) {
+    console.log("here");
     inList = await (await fetch(`/api/isInList?listId=${lists[i].list_id}&contentId=${data.id}`)).json();
-    console.log(inList);
 
     if (inList) {
-      document.getElementById(`add-to-list-btn#${lists[i].listId}`).checked = true;
+      document.querySelector(`#add-to-list-btn${lists[i].list_id}`).checked = true;
     }
   }
 
@@ -87,14 +79,12 @@ async function changeModalContentToVideo(data) {
 
       box.addEventListener("change", async () => {
 
-        const listId = box.id.replace("add-to-list-btn#","");
+        const listId = box.id.replace("add-to-list-btn","");
         const contentId = data.id;
-        const backdropPath = data.backdropPath;
+        const backdropPath = data.backdrop_path;
         const originalTitle = data.title;
         const overview = data.overview;
         const contentType = data.media_type;
-
-        console.log(data)
 
         let addForm = new FormData();
         addForm.append("listId", listId);
@@ -109,12 +99,9 @@ async function changeModalContentToVideo(data) {
         deleteForm.append("contentId", contentId);
 
         if (box.checked) {
-          console.log("TRIED ADDING")
-          console.log(data);
           box.checked = true;
           await fetch('/api/addToList', {method: "POST", body: addForm});
         } else {
-          console.log("TRIED DELETING")
           box.checked = false;
           await fetch('/api/removeFromList', {method: "POST", body: deleteForm});
         }
@@ -122,17 +109,23 @@ async function changeModalContentToVideo(data) {
       });
     });
 
-    document.querySelector('#addBtn').addEventListener("click", () => {
-      player.pauseVideo();
-
+    document.querySelector('#addBtn').addEventListener("click", async () => {
       const videoContainer = document.querySelector("#video-container");
       const modalBottom = document.querySelector(".modal-bottom");
       const listWrapper = document.querySelector(".list-wrapper");
       const backBtn = document.querySelector("#backBtn");
 
-      videoContainer.style.display = "none";
-      modalBottom.style.display = "none";
-      listWrapper.style.display = "block";
+      let res = await fetch("/settings", {redirect: "follow", method: "GET"});
+
+      if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        player.pauseVideo();
+
+        videoContainer.style.display = "none";
+        modalBottom.style.display = "none";
+        listWrapper.style.display = "block";
+      }
 
       backBtn.addEventListener("click", () => {
         videoContainer.style.display = "block";

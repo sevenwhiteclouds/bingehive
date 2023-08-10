@@ -27,7 +27,7 @@
                 <div class="carousel-item">
                     <img src="<%= `https://image.tmdb.org/t/p/w780/${trendingShowsImg[i]}` %>" alt="list-item" class="cell">
                     <div class='hover' onclick='modalOpen(<%= JSON.stringify(trendingShows[i]) %>)' id='modal#<%= i %>'>
-                        <h4 class="hover-movie-title"><%= trendingShows[i].original_name %></h4>
+                        <h4 class="hover-movie-title"><%= trendingShows[i].original_title %></h4>
                     </div>
                 </div>
             <% } %>

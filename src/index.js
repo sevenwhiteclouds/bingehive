@@ -54,7 +54,7 @@ app.listen(3000, () => {
 
 // Sends user straight to login. Most aesthetic for URL.
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.redirect('/movies');
 })
 
 app.get("/search", async (req, res) => {
@@ -67,8 +67,6 @@ app.get("/search", async (req, res) => {
 
   res.render("search.ejs", {css: "main", data: results});
 });
-
-
 
 app.get("/api/image/", async (req, res) => {
   let fileKey;
@@ -83,9 +81,16 @@ app.get("/api/image/", async (req, res) => {
   s3Download(fileKey).pipe(res);
 });
 
-// TODO: this needs middleware to check if user is already logged in for all routes
-app.get('/login', async (req, res) => {
-  res.render('index.ejs', { 'css': 'login' });
+function isAuthenticatedSpecial(req, res, next) {
+  if (req.session.authenticated) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+}
+
+app.get('/login', isAuthenticatedSpecial, async (req, res) => {
+  res.render('login.ejs', { 'css': 'login' });
 })
 
 app.get('/logout', isAuthenticated, (req, res) => {
@@ -93,17 +98,21 @@ app.get('/logout', isAuthenticated, (req, res) => {
   res.redirect("/");
 });
 
-app.get('/create-account', async (req, res) => {
+app.get('/create-account', isAuthenticatedSpecial, async (req, res) => {
   res.render('createAccount.ejs', { 'css': 'login' });
 })
+
 
 app.get('/fetchMovieData', async (req, res) => {
   res.send(await fetchMovieData());
 });
 
-app.get('/settings/delete', async function(req, res) {
+app.get('/settings/delete', isAuthenticated, async function(req, res) {
   // TODO: ask user if they are sure they want to delete, prevent accidental click
-  let sql = `DELETE FROM user WHERE user_id = "${req.session.userId}"`;
+  let sql1 = `SELECT list.list_id FROM list JOIN user ON user.user_id = list.user_id where user.user_id = "${req.session.userId}";`
+  let list_id = await executeSQL(sql1);
+  let sql2 = `DELETE FROM list_entry WHERE list_id = "${list_id[0].list_id}"`;
+
   let rows = await executeSQL(sql);
   res.redirect('/');
 })
@@ -122,7 +131,15 @@ app.get('/settings/password', isAuthenticated, async function(req, res) {
   });
 });
 
-app.get('/settings', isAuthenticated, async function(req, res) {
+function isAuthenticatedSettings(req, res, next) {
+  if (!req.session.authenticated) {
+    res.redirect("/login");
+  } else {
+    next()
+  }
+}
+
+app.get('/settings', isAuthenticatedSettings, async function(req, res) {
   let sql = `SELECT * FROM user WHERE user_id = '${req.session.userId}'`;
   let rows = (await executeSQL(sql))[0];
 
@@ -213,7 +230,7 @@ app.get('/api/fetch-trailer', async (req, res) => {
   const movieID = req.query.id;
   const contentType = req.query.contentType;
   const data = await fetchTrailers(movieID, contentType);
-  console.log(data)
+
   res.json(data);
 });
 
@@ -223,10 +240,10 @@ app.get('/api/getList', async (req, res) => {
   res.send(lists);
 });
 
-app.post('/api/addToList', upload.none(), async (req, res) => {
+app.post('/api/addToList', upload.none(), isAuthenticated, async (req, res) => {
   const listId = req.body.listId;
-  const contentId = req.body.id;
-  const mediaType = req.body.mediaType;
+  const contentId = req.body.contentId;
+  const mediaType = req.body.contentType;
   const backdropPath = req.body.backdropPath;
   const originalTitle = req.body.originalTitle;
   const overview = req.body.overview;
@@ -236,19 +253,24 @@ app.post('/api/addToList', upload.none(), async (req, res) => {
   res.send("Congrats! the movie was added!");
 });
 
-app.post('/api/removeFromList', upload.none(), async (req, res) => {
+app.post('/api/removeFromList', upload.none(), isAuthenticated, async (req, res) => {
   const listId = req.body.listId;
   const contentId = req.body.contentId;
-
-  console.log(listId);
-  console.log(contentId);
 
   await removeFromList(listId, contentId);
 
   res.send("Item removed from list");
 });
 
-app.get('/api/isInList', async (req, res) => {
+function isAuthenticatedInList(req, res, next) {
+  if (!req.query.authenticated)  {
+    res.send(false);
+  } else {
+    next();
+  }
+}
+
+app.get('/api/isInList', isAuthenticatedInList, async (req, res) => {
   const listId = req.query.listId;
   const contentId = req.query.contentId;
 
@@ -268,11 +290,10 @@ async function isInList(listId, contentId) {
 
 async function addToList(listId, contentId, backdropPath, originalTitle, overview, mediaType) {
 
-  let sql = `INSERT INTO list_entry (list_id, id, backdropPath, original_title, media_type, overview)
+  let sql = `INSERT INTO list_entry (list_id, id, backdrop_path, original_title, media_type, overview)
              VALUES (?, ?, ?, ?, ?, ?)`
 
-  let params = [listId, contentId, backdropPath, originalTitle, overview, mediaType];
-  console.log(params)
+  let params = [listId, contentId, backdropPath, originalTitle, mediaType, overview];
 
   await executeSQL(sql, params);
 }
@@ -304,6 +325,11 @@ app.get('/television', async (req, res) => {
     const url = 'https://api.themoviedb.org/3/trending/tv/week?language=en-US';
     const response = await fetch(url, apiOptions)
     const data = await response.json();
+
+    for (show of data.results) {
+      show.original_title = show.original_name;
+    }
+
     let index = getRandomNumFromLength(data.results.length);
     let listData = await getList(req.session.userId);
 
@@ -322,8 +348,6 @@ app.get('/television', async (req, res) => {
         trendingShowsImg.push(show.backdrop_path);
       }
     });
-
-    console.log(trendingShows)
 
     res.render('television.ejs', {
       'css': 'main',
@@ -364,7 +388,7 @@ app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, r
   res.redirect("/settings");
 });
 
-app.post('/create-account', upload.single("pfp"), async (req, res) => {
+app.post('/create-account', upload.single("pfp"), isAuthenticatedSpecial, async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
@@ -444,10 +468,10 @@ async function createList(userId, listName) {
 
   let rows = await executeSQL(sql, params);
 }
+
 app.get("/mylist", isAuthenticated, async (req, res) => {
   const listId = req.query.id;
   const title = req.query.title;
-  console.log(listId);
 
   let data = await (await getAllListEntries(listId));
 
@@ -468,7 +492,8 @@ async function getAllListEntries(listId) {
   return await executeSQL(sql, params);
 }
 
-app.post("/settings", upload.none(), async (req, res) => {
+
+app.post("/settings", upload.none(), isAuthenticatedSettings, async (req, res) => {
   let userId = req.session.userId;
   let newUsername = req.body.newUsername;
   const minLength = 8;
@@ -490,13 +515,13 @@ app.post("/settings", upload.none(), async (req, res) => {
   res.send("Updated.");
 });
 
-app.post("/settings/password", upload.none(), async (req, res) => {
+app.post("/settings/password", upload.none(), isAuthenticated, async (req, res) => {
   let userId = req.session.userId;
   let newPassword = req.body.newPassword;
   let oldPassword = req.body.oldPassword;
   let sql = `SELECT * FROM user where user_id = ?`;
   let rows = await executeSQL(sql, [userId]);
-  console.log(rows);
+
   let hashedPwd = rows[0].password;
   let passwordMatch = await bcrypt.compare(oldPassword, hashedPwd);
   if (!passwordMatch){
@@ -519,7 +544,7 @@ app.post("/settings/password", upload.none(), async (req, res) => {
   });
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", isAuthenticatedSpecial, async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let hashedPwd = "";
@@ -531,7 +556,7 @@ app.post("/login", async (req, res) => {
 
   if (rows === null || rows.length === 0) {
     req.session.authenticated = false;
-    res.render('index.ejs', { 'css': 'login', "loginError": true });
+    res.render('login.ejs', { 'css': 'login', "loginError": true });
     return;
   }
 
@@ -548,7 +573,7 @@ app.post("/login", async (req, res) => {
     res.redirect('/movies');
   } else {
     req.session.authenticated = false;
-    res.render('index.ejs', { 'css': 'login', "loginError": true });
+    res.render('login.ejs', { 'css': 'login', "loginError": true });
   }
 });
 

@@ -7,6 +7,7 @@ const modal = new tingle.modal({
   footer: true,
   stickyFooter: false,
   closeMethods: [],
+  cssClass: ['crop-modal'],
   closeLabel: "Close",
 
   beforeOpen: function() {
@@ -51,7 +52,20 @@ const lastField = document.querySelector("input[name='last']");
 // message from server
 const serverMessage = document.querySelector("#server-message");
 
-createButton.addEventListener("click", async () => {
+// monitoring input
+createButton.addEventListener("click", grabAndSend)
+usernameField.addEventListener("keyup", broHitEnter);
+passwordField.addEventListener("keyup", broHitEnter);
+firstField.addEventListener("keyup", broHitEnter);
+lastField.addEventListener("keyup", broHitEnter);
+
+function broHitEnter(event) {
+  if (event.key === "Enter") {
+    grabAndSend();
+  }
+}
+
+async function grabAndSend() {
   let formData = new FormData();
 
   formData.append("username", usernameField.value);
@@ -67,7 +81,6 @@ createButton.addEventListener("click", async () => {
     formData.append("pfp", blob);
   }
 
-  // TODO: still need to improve this redirect
   let response = await fetch("/create-account", {redirect: "follow", method: "POST", body: formData});
   if (response.redirected) {
     window.location.href = response.url;
@@ -75,4 +88,4 @@ createButton.addEventListener("click", async () => {
     serverMessage.innerHTML = "";
     serverMessage.innerHTML = await response.text();
   }
-});
+}
