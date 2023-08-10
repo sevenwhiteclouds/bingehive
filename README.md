@@ -1,14 +1,16 @@
 <div align="center">
   <img src="./src/public/assets/BingeHiveHorizontalLogo.png" alt="logo">
 
-BingeHive, a dynamic and user-friendly web app designed to be your go-to destination for all things movies and TV shows.  
+BingeHive, a dynamic and user-friendly web app designed to be your go-to destination 
+for all things movies and TV shows.  
 _A movie or TV show aficionado's heaven._
 </div>
 
 
 ## Usage Guide
 
-BingeHive is currently live at [here](https://bingehive.com). To get started, simply visit the site and explore around 
+BingeHive is currently live [here](https://bingehive.com). 
+To get started, simply visit the site and explore around 
 for different movies or TV shows that are available. If you already know what you are looking for, 
 there is also a search bar to quickly jump to search for a title.
 
@@ -43,12 +45,13 @@ there is also a search bar to quickly jump to search for a title.
 * **Additional Dependencies**
   * Multer - Used for profile picture file uploading from the user
   * Tingle - Used for modals
-  * Cropper - Used for cropping user seleted images client side
+  * Cropper - Used for cropping user selected images client side
 
 ## Explore the Code
 
 You can explore BingeHive's code base by navigating to the `src`
-directory found in this GitHub repository. Alternatively, you can simply click this [link](https://github.com/sevenwhiteclouds/bingehive/tree/master/src)
+directory found in this GitHub repository. 
+Alternatively, you can simply click this [link](https://github.com/sevenwhiteclouds/bingehive/tree/master/src)
 to take you there directly.
 
 ```javascript
