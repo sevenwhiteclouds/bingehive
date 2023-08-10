@@ -8,9 +8,9 @@ _A movie or TV show aficionado's heaven._
 
 ## Usage Guide
 
-BingeHive is currently live at [here](https://bingehive.com). To get started, simply visit the site
-and explore around for different movies or tv shows that are available. If you already know what you are looking for, 
-there is also a search bar to quickly jump search for a title.
+BingeHive is currently live at [here](https://bingehive.com). To get started, simply visit the site and explore around 
+for different movies or TV shows that are available. If you already know what you are looking for, 
+there is also a search bar to quickly jump to search for a title.
 
 ![home ss](./docs/movies_home_ss.png)
 
@@ -65,8 +65,8 @@ app.listen(3000, () => {
 
 ## Future Plans
 
-Currently, the generated lists can only be seen by the user that owns in. Future iterations of this
-web app would allow ideally to share those lists with friends and family, to create social aspect behind the app.
+Currently, the generated lists can only be seen by the user that owns them. Future iterations of this
+web app would allow ideally to share those lists with friends and family, to create social aspect to the web app.
 
 ## Acknowledgments/Contact
 
