@@ -21,6 +21,7 @@ there is also a search bar to quickly jump to search for a title.
 * **Backend**
   * Node.js - Runtime environment for server-side JavaScript
   * Express - Used for building RESTful APIs and handling routes
+  * Nginx - Used as a reverse proxy to reach the Node environment running the web app
   * MySQL - Used for storing and managing user generated data
 * **Authentication**
   * Express Session - Used for user authentication and authorization
