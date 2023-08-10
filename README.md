@@ -66,7 +66,8 @@ app.listen(3000, () => {
 ## Future Plans
 
 Currently, the generated lists can only be seen by the user that owns them. Future iterations of this
-web app would allow ideally to share those lists with friends and family, to create social aspect to the web app.
+web app would allow ideally to share those lists with friends and family, 
+to create a social aspect to the web app.
 
 ## Acknowledgments/Contact
 
