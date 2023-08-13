@@ -23,10 +23,13 @@ const modal = new tingle.modal({
       minCropBoxWidth: 150,
       minCropBoxHeight: 150
     });
-  }
+  },
 });
 
 modal.addFooterBtn("Cancel", "tingle-btn tingle-btn--secondary", function() {
+  pfpInput.value = "";
+  defaultPfp.src = "/assets/default_user_upload.png";
+  cropper = undefined;
   modal.close();
 });
 
@@ -37,8 +40,18 @@ modal.addFooterBtn("Save", "tingle-btn tingle-btn--primary", function() {
 
 pfpInput.addEventListener("change", () => {
   if (pfpInput.files[0] !== undefined) {
-    modal.setContent(`<div id="imgdiv"><img src="${URL.createObjectURL(pfpInput.files[0])}" id="crop-this"></div>`);
-    modal.open();
+    if (pfpInput.files[0].size < (8 * 1024 * 1024)) {
+      serverMessage.innerHTML = "";
+      modal.setContent(`<div id="imgdiv"><img src="${URL.createObjectURL(pfpInput.files[0])}" id="crop-this"></div>`);
+      modal.open();
+    } else {
+      pfpInput.value = "";
+      serverMessage.innerHTML = "";
+      serverMessage.innerHTML = "File too big";
+    }
+  } else {
+    defaultPfp.src = "/assets/default_user_upload.png";
+    cropper = undefined;
   }
 });
 

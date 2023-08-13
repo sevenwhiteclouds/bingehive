@@ -60,8 +60,13 @@ button{
   align-items: center;
 }
 
+#logout button {
+  cursor: pointer;
+}
+
 #updateBtn, #updatePswd{
   color: #FDCC00;
+  cursor: pointer;
 }
 
 
