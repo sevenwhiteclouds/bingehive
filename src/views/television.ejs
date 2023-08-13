@@ -12,11 +12,9 @@
 
     <% if (authenticated === true) { %>
         <%- include('partials/listCarousel.ejs') %>
-    <% } %>
-
         <button class="carousel-button1 prev" id="b1">&#8249;</button>
         <button class="carousel-button2 next" id="b2">&#8250;</button>
-    </div>
+    <% } %>
 
     <div class="slide" id='trending-slide'>
 
@@ -116,7 +114,7 @@
     </div>
 
 
-</div>
+  </div>
 
 <script src="/js/carousel.js"></script>
 <script src="/js/tingle.min.js"></script>

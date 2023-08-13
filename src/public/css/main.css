@@ -128,10 +128,6 @@ body {
   cursor: pointer;
 }
 
-#b2 {
-  display: none;
-}
-
 .addBtn {
   width: 35px;
   margin-left: 10px;
