@@ -1,7 +1,7 @@
 // multer, picture upload middleware
 const multer = require("multer");
 const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 // database and api access
 const mysql = require("mysql2");
@@ -393,6 +393,12 @@ app.get('/television', async (req, res) => {
 
 app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, res) => {
   const image = req.file;
+
+  if (image.size > (8 * (1024 * 1024))) {
+    res.send("File too big");
+    return;
+  }
+
   let uploadStatus = await s3Upload(image.buffer);
 
   if (uploadStatus !== undefined) {
@@ -405,11 +411,17 @@ app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, r
 });
 
 app.post('/create-account', upload.single("pfp"), isAuthenticatedSpecial, async (req, res) => {
+  const image = req.file;
+
+  if (image.size > (8 * (1024 * 1024))) {
+    res.send("File too big");
+    return;
+  }
+
   const username = req.body.username;
   const password = req.body.password;
   const first = req.body.first;
   const last = req.body.last;
-  const image = req.file;
 
   const minLength = 8;
   const maxLength = 32;
