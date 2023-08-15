@@ -1,4 +1,4 @@
-const s3Configs = require("./configs_DO_NOT_GITHUB.json").s3;
+const s3Configs = require("../configs_DO_NOT_GITHUB.json").s3;
 const s3 = require("aws-sdk/clients/s3");
 
 const s3Access = new s3({
