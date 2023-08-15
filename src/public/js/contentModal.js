@@ -19,7 +19,6 @@ var modal = new tingle.modal({
 
 // This is how we open the Model and initialize the first page.
 async function modalOpen(data) {
-  console.log(data);
   await changeModalContentToVideo(data);
   modal.open();
 }
@@ -74,7 +73,6 @@ async function changeModalContentToVideo(data) {
   for (let i = 0; i < lists.length; i++) {
 
     inList = await (await fetch(`/api/isInList?listId=${lists[i].list_id}&contentId=${data.id}`)).json();
-    console.log(inList);
 
     if (inList) {
       document.querySelector(`#add-to-list-btn${lists[i].list_id}`).checked = true;
