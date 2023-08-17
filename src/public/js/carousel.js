@@ -2,8 +2,20 @@ const slides = document.querySelectorAll('.slide');
 const staticWidth = 300; //px
 const bannerWidth = 404; //px
 let carouselItemsOnScreen;
+let listLength;
 
 handleCarouselResponsive();
+getListLength();
+
+async function getListLength() {
+    listLength = (await (await fetch('/api/getList')).json()).length;
+
+    if (document.querySelector('#b1') !== null){ {
+        if (listLength < carouselItemsOnScreen) {
+            document.querySelector("#b2").style.display = 'none';
+        }
+    }}
+}
 
 function handleCarouselResponsive() {
 
@@ -26,8 +38,8 @@ const genre2Carousel = createCarousel('genre2-carousel');
 const genre3Carousel = createCarousel('genre3-carousel');
 
 if (document.querySelector('#b1') !== null){
-  document.querySelector('#b1').addEventListener('click', listCarousel.prevSlide);
-  document.querySelector('#b2').addEventListener('click', listCarousel.nextSlide);
+    document.querySelector('#b1').addEventListener('click', listCarousel.prevSlide);
+    document.querySelector('#b2').addEventListener('click', listCarousel.nextSlide);
 }
 
 document.querySelector('#b3').addEventListener('click', trendingCarousel.prevSlide);
@@ -47,16 +59,8 @@ document.querySelector('#b12').addEventListener('click', genre3Carousel.nextSlid
 
 function createCarousel(elementID) {
   let currentIndex = 0;
-  // TODO: Temp hard-code. Lists are yet to be implemented
-  const listLength = 3;
   const carousel = document.querySelector(`#${elementID}`);
   const carouselItems = document.querySelectorAll(`#${elementID} .carousel-item`);
-
-  if (document.querySelector('#b1') !== null){ {
-      if (listLength < carouselItemsOnScreen) {
-          document.querySelector("#b2").style.display = 'none';
-      }
-  }}
 
   function prevSlide() {
 

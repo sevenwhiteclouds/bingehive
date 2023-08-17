@@ -263,6 +263,7 @@ app.get('/api/fetch-trailer', async (req, res) => {
 app.get('/api/getList', async (req, res) => {
   const userID = req.session.userId;
   const lists = await getList(userID);
+
   res.send(lists);
 });
 
@@ -297,7 +298,6 @@ app.get('/api/isInList', isAuthenticatedInList, async (req, res) => {
 
 app.get('/television', async (req, res) => {
   try {
-
     const genreList = [];
     const genreShows = [];
 
