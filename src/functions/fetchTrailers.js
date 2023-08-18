@@ -1,4 +1,4 @@
-const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
+const apiOptions = require("../configs_DO_NOT_GITHUB.json").api;
 
 async function fetchTrailers(contentId, contentType) {
   const url = `https://api.themoviedb.org/3/${contentType}/${contentId}/videos?language=en-US`;

@@ -3,16 +3,42 @@ const multer = require("multer");
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage });
 
-// database and api access
-const mysql = require("mysql2");
-const dbAccess = mysql.createPool(require("./configs_DO_NOT_GITHUB.json").db);
+// Api access
 const apiOptions = require("./configs_DO_NOT_GITHUB.json").api;
 
 // s3 bucket
-const { s3Upload, s3Download } = require('./s3.js');
+const { s3Upload, s3Download } = require('./functions/s3.js');
 
 // Trailer API calls
-const { fetchTrailers } = require('./fetchTrailers');
+const { fetchTrailers } = require('./functions/fetchTrailers.js');
+
+// List functions
+const { isInList } = require('./functions/isInList');
+const { removeFromList } = require('./functions/removeFromList');
+const { addToList } = require('./functions/addToList');
+const { createList } = require('./functions/createList');
+const { getList } = require('./functions/getList');
+const { getAllListEntries } = require('./functions/getAllListEntries');
+
+// Random num generator function
+const { getRandomNumFromLength } = require('./functions/getRandomNumFromLength');
+
+// SQL execution function
+const { executeSQL } = require('./functions/executeSQL');
+
+// Authentication functions
+const { isAuthenticatedSpecial, isAuthenticatedSettings, isAuthenticatedInList, isAuthenticated} = require('./functions/authentications.js');
+
+// Input Validation functions
+
+const { isUsernameValid, isPasswordValid, isNameValid } = require('./functions/validation');
+
+// Movie data functions
+const { fetchMovieData } = require('./functions/fetchMovieData');
+const { fetchMoviesFromGenres } = require('./functions/fetchMoviesFromGenre');
+
+// Show data functions
+const { fetchShowsFromGenres } = require('./functions/fetchShowsFromGenre');
 
 // sessions
 const session = require('express-session');
@@ -52,7 +78,7 @@ app.listen(3000, () => {
   console.log("server started");
 })
 
-// Sends user straight to login. Most aesthetic for URL.
+// Sends user straight to movies. Most aesthetic for URL.
 app.get('/', (req, res) => {
   res.redirect('/movies');
 })
@@ -87,14 +113,6 @@ app.get("/api/image/", async (req, res) => {
 
   s3Download(fileKey).pipe(res);
 });
-
-function isAuthenticatedSpecial(req, res, next) {
-  if (req.session.authenticated) {
-    res.redirect("/");
-  } else {
-    next();
-  }
-}
 
 app.get('/login', isAuthenticatedSpecial, async (req, res) => {
   res.render('login.ejs', { 'css': 'login' });
@@ -146,14 +164,6 @@ app.get('/settings/password', isAuthenticated, async function(req, res) {
     'types': types
   });
 });
-
-function isAuthenticatedSettings(req, res, next) {
-  if (!req.session.authenticated) {
-    res.redirect("/login");
-  } else {
-    next()
-  }
-}
 
 app.get('/settings', isAuthenticatedSettings, async function(req, res) {
   let sql = `SELECT * FROM user WHERE user_id = '${req.session.userId}'`;
@@ -253,6 +263,7 @@ app.get('/api/fetch-trailer', async (req, res) => {
 app.get('/api/getList', async (req, res) => {
   const userID = req.session.userId;
   const lists = await getList(userID);
+
   res.send(lists);
 });
 
@@ -278,14 +289,6 @@ app.post('/api/removeFromList', upload.none(), isAuthenticated, async (req, res)
   res.send("Item removed from list");
 });
 
-function isAuthenticatedInList(req, res, next) {
-  if (!req.session.authenticated)  {
-    res.send(false);
-  } else {
-    next();
-  }
-}
-
 app.get('/api/isInList', isAuthenticatedInList, async (req, res) => {
   const listId = req.query.listId;
   const contentId = req.query.contentId;
@@ -293,37 +296,8 @@ app.get('/api/isInList', isAuthenticatedInList, async (req, res) => {
   res.send(await isInList(listId, contentId));
 });
 
-async function isInList(listId, contentId) {
-  const sql = `SELECT id
-               FROM list_entry
-               WHERE id = ${contentId} AND list_id = ${listId}`
-
-  const rows = await executeSQL(sql);
-
-  return rows.length !== 0;
-
-}
-
-async function addToList(listId, contentId, backdropPath, originalTitle, overview, mediaType) {
-
-  let sql = `INSERT INTO list_entry (list_id, id, backdrop_path, original_title, media_type, overview)
-             VALUES (?, ?, ?, ?, ?, ?)`
-
-  let params = [listId, contentId, backdropPath, originalTitle, mediaType, overview];
-
-  await executeSQL(sql, params);
-}
-
-async function removeFromList(listId, contentId) {
-
-  let sql = `DELETE FROM list_entry WHERE list_Id = ${listId} AND id = ${contentId}`
-
-  await executeSQL(sql);
-}
-
 app.get('/television', async (req, res) => {
   try {
-
     const genreList = [];
     const genreShows = [];
 
@@ -411,11 +385,13 @@ app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, r
 });
 
 app.post('/create-account', upload.single("pfp"), isAuthenticatedSpecial, async (req, res) => {
-  const image = req.file;
+  let image = req.file;
 
-  if (image.size > (8 * (1024 * 1024))) {
-    res.send("File too big");
-    return;
+  if (image !== undefined) {
+    if (image.size > (8 * (1024 * 1024))) {
+      res.send("File too big");
+      return;
+    }
   }
 
   const username = req.body.username;
@@ -490,13 +466,6 @@ app.post('/create-account', upload.single("pfp"), isAuthenticatedSpecial, async 
   });
 });
 
-async function createList(userId, listName) {
-  let sql = "INSERT INTO list (user_id, list_name) VALUES (?, ?)"
-  let params = [userId, listName];
-
-  let rows = await executeSQL(sql, params);
-}
-
 app.get("/mylist", isAuthenticated, async (req, res) => {
   const listId = req.query.id;
   const title = req.query.title;
@@ -505,21 +474,6 @@ app.get("/mylist", isAuthenticated, async (req, res) => {
 
   res.render("mylist.ejs", {css: "main", title: title, data: data});
 });
-
-async function getList(userId) {
-  let sql = `SELECT list.list_id, list.list_name FROM list WHERE list.user_id = ?`
-
-  let params = [userId];
-  return await executeSQL(sql, params);
-}
-
-async function getAllListEntries(listId) {
-  let sql = `SELECT * FROM list_entry WHERE list_entry.list_id = ?`
-
-  let params = [listId];
-  return await executeSQL(sql, params);
-}
-
 
 app.post("/settings", upload.none(), isAuthenticatedSettings, async (req, res) => {
   let userId = req.session.userId;
@@ -605,107 +559,3 @@ app.post("/login", isAuthenticatedSpecial, async (req, res) => {
   }
 });
 
-function isAuthenticated(req, res, next) {
-  if (!req.session.authenticated) {
-    res.redirect("/");
-  } else {
-    next();
-  }
-}
-
-function getRandomNumFromLength(size) {
-  return Math.floor(Math.random() * size);
-}
-
-async function executeSQL(query, params) {
-  return new Promise((resolve, reject) => {
-    dbAccess.query(query, params, (err, rows, fields) => {
-      if (err) console.log("SQL ERROR: " + err);
-      resolve(rows);
-    });
-  });
-}
-
-async function fetchMovieData() {
-  try {
-    const url = 'https://api.themoviedb.org/3/trending/movie/day?language=en-US';
-    const response = await fetch(url, apiOptions)
-    const data = await response.json();
-    let index = getRandomNumFromLength(data.results.length);
-
-    // Keeps movies without a backdrop out of the rotation
-    while (data.results[index].backdrop_path == null) {
-      index = getRandomNumFromLength(data.results.length);
-    }
-
-    const banner = data.results[index].backdrop_path;
-    const trendingMovies = [];
-    const trendingMoviesImg = [];
-    data.results.forEach((movie) => {
-      if (movie.backdrop_path != null) {
-        trendingMovies.push(movie.original_title);
-        trendingMoviesImg.push(movie.backdrop_path);
-      }
-    });
-    return {
-      bannerUrl: `https://image.tmdb.org/t/p/original/${banner}`,
-      description: data.results[index].overview,
-      title: data.results[index].original_title,
-      trendingMovies: trendingMovies,
-      trendingMoviesImg: trendingMoviesImg,
-      data: data,
-      index: index
-    };
-  } catch (err) {
-    console.error("APIerror:" + err);
-  }
-}
-
-function isUsernameValid(username, min, max) {
-  const chars = /^[a-zA-Z0-9]+$/;
-  const length = username.length;
-  const check = chars.test(username);
-
-  return ((length >= min) && (length <= max) && (check));
-}
-
-function isPasswordValid(password, min, max) {
-  const chars = /^[a-zA-Z0-9~!@#$%^&*()]+$/;
-  const length = password.length;
-  const check = chars.test(password);
-
-  return ((length >= min) && (length <= max) && (check));
-}
-
-function isNameValid(name, min, max) {
-  const chars = /^[a-zA-Z -]+$/;
-  const length = name.length;
-  let check = chars.test(name);
-
-  return ((length >= min) && (length <= max) && (check));
-}
-
-async function fetchShowsFromGenres(genre, page) {
-  const url = `https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=${page}&sort_by=popularity.desc&watch_region=US&with_genres=${genre}&with_origin_country=US&with_original_language=en`
-  const response = await fetch(url, apiOptions)
-  const data = await response.json();
-
-  for (const content of data.results) {
-    content.media_type = "tv";
-    content.original_title = content.original_name;
-  }
-
-  return data.results;
-}
-
-async function fetchMoviesFromGenres(genre, page) {
-  const url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&region=US&sort_by=popularity.desc&watch_region=US&with_genres=${genre}&with_origin_country=US&with_original_language=en`;
-  const response = await fetch(url, apiOptions)
-  const data = await response.json();
-
-  for (const content of data.results) {
-    content.media_type = "movie";
-  }
-
-  return data.results;
-}

@@ -120,7 +120,6 @@ window.onclick = function(event) {
 
 function serverFunction(input) {
   const actionText = input.innerText; // Input text ex: "Action"
-  console.log(actionText);
 
   const currentPath = window.location.pathname;
   const parts = currentPath.split('/').filter(part => part !== ''); // Split path by slashes and remove empty parts
@@ -172,7 +171,6 @@ function changePageGenre(data) {
 function createMovieRows(data) {
 
   let htmlString = '';
-  console.log(data);
 
   for (let i = 1; i < data.length; i++) {
     for(let j = 0; j < data[i].length; j++) {
