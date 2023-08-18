@@ -368,9 +368,11 @@ app.get('/television', async (req, res) => {
 app.post('/api/update-pfp', upload.single("pfp"), isAuthenticated, async (req, res) => {
   const image = req.file;
 
-  if (image.size > (8 * (1024 * 1024))) {
-    res.send("File too big");
-    return;
+  if (image !== undefined) {
+    if (image.size > (8 * (1024 * 1024))) {
+      res.send("File too big");
+      return;
+    }
   }
 
   let uploadStatus = await s3Upload(image.buffer);
