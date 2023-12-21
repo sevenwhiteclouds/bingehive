@@ -19,8 +19,11 @@ const modalPfp = new tingle.modal({
       cropBoxResizable: false,
       checkOrientation: false,
       wheelZoomRatio: 0.3,
-      minCropBoxWidth: 150,
-      minCropBoxHeight: 150
+      minCropBoxWidth: 600,
+      minCropBoxHeight: 600,
+      maxCropBoxWidth: 600,
+      maxCropBoxHeight: 600,
+      imageSmoothingQuality: 'high',
     });
   }
 });
@@ -32,11 +35,13 @@ modalPfp.addFooterBtn("Cancel", "tingle-btn tingle-btn--secondary", () => {
   modalPfp.close();
 });
 
+// update profile picture from settings
 modalPfp.addFooterBtn("Save", "tingle-btn tingle-btn--primary", async () => {
   let formData = new FormData();
 
   formData.append("pfp", await new Promise(resolve => {
-    cropper.getCroppedCanvas().toBlob(blob => resolve(blob));
+    //cropper.getCroppedCanvas().toBlob(blob => resolve(blob));
+    cropper.getCroppedCanvas({minWidth: 600, minHeight: 600, maxWidth: 600, maxHeight: 600}).toBlob(blob => resolve(blob), pfpInput.files[0].type, 1);
   }));
 
   // TODO: add a try block or something to check that upload was success
