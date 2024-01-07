@@ -560,4 +560,3 @@ app.post("/login", isAuthenticatedSpecial, async (req, res) => {
     res.render('login.ejs', { 'css': 'login', "loginError": true });
   }
 });
-
